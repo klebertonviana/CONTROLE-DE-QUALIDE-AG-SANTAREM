@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Qualidade - Agência Santarém</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <section id="loginScreen" class="login-screen">
+    <header class="login-topbar">
+      <div class="brand-center">
+        <div class="brand-images">
+          <img src="logo-cgb.png" class="logo-cgb" alt="CGB" />
+          <div class="brand-divider"></div>
+          <img src="logo-agencia-santarem.png" class="logo-agencia" alt="Agência Santarém" />
+        </div>
+      </div>
+
+      <div class="brand-subtitle">REGIONAL OESTE - PA</div>
+    </header>
+
+    <main class="login-area">
+      <div class="login-card">
+        <h2>CONTROLE DE QUALIDADE</h2>
+        <p>Faça login para continuar</p>
+
+        <form id="loginForm">
+          <label for="matriculaInput">Matrícula</label>
+          <input
+            type="text"
+            id="matriculaInput"
+            placeholder="Ex: 23715"
+            autocomplete="off"
+            required
+          />
+
+          <button type="submit">Entrar</button>
+
+          <span id="loginError" class="login-error"></span>
+        </form>
+      </div>
+    </main>
+  </section>
+
+  <!-- SISTEMA -->
+  <section id="appScreen" class="app-screen hidden">
+
+    <!-- TOPO -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-images">
+          <img src="logo-cgb.png" class="logo-cgb-header" alt="CGB" />
+          <div class="brand-divider"></div>
+          <img src="logo-agencia-santarem.png" class="logo-agencia-header" alt="Agência Santarém" />
+        </div>
+
+        <span class="header-title">CONTROLE DE QUALIDADE</span>
+      </div>
+
+      <div class="header-user">
+        <button id="profileButton" class="user-button">
+          <i class="fa-regular fa-circle-user"></i>
+          <span id="topUserText">00000 - Usuário</span>
+        </button>
+
+        <button id="logoutButton" class="logout-button">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <div class="app-body">
+
+      <!-- MENU LATERAL -->
+      <aside class="sidebar">
+        <nav class="menu">
+
+          <button class="menu-item active" data-page="home">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Troca por Análise com Desligamento">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Troca por Análise com Desligamento</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Troca com Análise">
+            <i class="fa-solid fa-file-circle-check"></i>
+            <span>Troca com Análise</span>
+          </button>
+
+          <button class="menu-item" data-page="complaint">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Reclamação</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Registros de Reclamação">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <span>Registros de Reclamação</span>
+          </button>
+
+          <button class="menu-item" data-page="scripts">
+            <i class="fa-solid fa-comments"></i>
+            <span>Scripts / Mensagens Padrão</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Plano de Contingência">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Plano de Contingência</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Controle de Serviços Manuais">
+            <i class="fa-solid fa-table-list"></i>
+            <span>Controle de Serviços Manuais</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Reincidência">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>Reincidência</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Gestão de Leitura">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span>Gestão de Leitura</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Gestão de Horas">
+            <i class="fa-regular fa-clock"></i>
+            <span>Gestão de Horas</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Acompanhamento TSEE">
+            <i class="fa-solid fa-users"></i>
+            <span>Acompanhamento TSEE</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Agenda de Ações">
+            <i class="fa-regular fa-calendar-check"></i>
+            <span>Agenda de Ações</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Meu TMA">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>Meu TMA</span>
+          </button>
+
+          <button class="menu-item" data-page="iframe" data-title="Gestão de Atividades">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <span>Gestão de Atividades</span>
+          </button>
+
+          <button class="menu-item" data-page="external" data-title="Nova Agenda Pará">
+            <i class="fa-solid fa-cloud"></i>
+            <span>Nova Agenda Pará</span>
+          </button>
+
+        </nav>
+      </aside>
+
+      <!-- CONTEÚDO PRINCIPAL -->
+      <main class="main-content">
+
+        <!-- INÍCIO -->
+        <section id="homePage" class="page active-page">
+          <h1>Bem-vindo ao Controle de Qualidade</h1>
+          <p class="page-subtitle">Selecione uma opção no menu ao lado para iniciar.</p>
+
+          <h3 class="section-title">Acesso rápido</h3>
+
+          <div class="cards-grid">
+
+            <button class="home-card" data-page="iframe" data-title="Troca por Análise com Desligamento">
+              <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
+              <div>
+                <strong>Troca por Análise com Desligamento</strong>
+                <span>Abrir formulário</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="iframe" data-title="Troca com Análise">
+              <div class="card-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+              <div>
+                <strong>Troca com Análise</strong>
+                <span>Abrir formulário</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="iframe" data-title="Reclamação">
+              <div class="card-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+              <div>
+                <strong>Reclamação</strong>
+                <span>Abrir formulário</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="iframe" data-title="Registros de Reclamação">
+              <div class="card-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+              <div>
+                <strong>Registros de Reclamação</strong>
+                <span>Gerar texto padrão</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="scripts" data-title="Scripts / Mensagens Padrão">
+              <div class="card-icon"><i class="fa-solid fa-comments"></i></div>
+              <div>
+                <strong>Scripts / Mensagens Padrão</strong>
+                <span>Ver scripts</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="iframe" data-title="Plano de Contingência">
+              <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+              <div>
+                <strong>Plano de Contingência</strong>
+                <span>Ver plano</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="iframe" data-title="Controle de Serviços Manuais">
+              <div class="card-icon"><i class="fa-solid fa-table-list"></i></div>
+              <div>
+                <strong>Controle de Serviços Manuais</strong>
+                <span>Ver registros</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="iframe" data-title="Reincidência">
+              <div class="card-icon"><i class="fa-solid fa-rotate-left"></i></div>
+              <div>
+                <strong>Reincidência</strong>
+                <span>Ver registros</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="iframe" data-title="Gestão de Leitura">
+              <div class="card-icon"><i class="fa-solid fa-chart-simple"></i></div>
+              <div>
+                <strong>Gestão de Leitura</strong>
+                <span>Ver registros</span>
+              </div>
+            </button>
+
+            <button class="home-card" data-page="iframe" data-title="Gestão de Horas">
+              <div class="card-icon"><i class="fa-regular fa-clock"></i></div>
+              <div>
+                <strong>Gestão de Horas</strong>
+                <span>Ver registros</span>
+              </div>
+            </button>
+
+          </div>
+
+          <div class="info-box">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>
+              <strong>Informações importantes</strong>
+              <p>Utilize o menu ao lado para acessar as funcionalidades do sistema.</p>
+              <p>Em caso de dúvidas, entre em contato com a supervisão.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- PERFIL -->
+        <section id="profilePage" class="page">
+          <h1>Meu Perfil</h1>
+          <p class="page-subtitle">Visualize suas informações pessoais e de acesso.</p>
+
+          <div class="profile-card">
+            <div class="profile-avatar">
+              <i class="fa-regular fa-user"></i>
+            </div>
+
+            <div class="profile-content">
+              <div class="profile-title">
+                <div class="profile-title-icon">
+                  <i class="fa-regular fa-user"></i>
+                </div>
+
+                <div>
+                  <h2>Informações Pessoais</h2>
+                  <p>Dados cadastrados pelo administrador</p>
+                </div>
+              </div>
+
+              <div class="profile-row">
+                <div>
+                  <span>Nome</span>
+                  <strong id="profileName">-</strong>
+                </div>
+                <i class="fa-regular fa-user"></i>
+              </div>
+
+              <div class="profile-row">
+                <div>
+                  <span>Matrícula</span>
+                  <strong id="profileMatricula">-</strong>
+                </div>
+                <i class="fa-solid fa-briefcase"></i>
+              </div>
+
+              <div class="profile-row">
+                <div>
+                  <span>Cargo</span>
+                  <strong id="profileCargo">-</strong>
+                </div>
+                <i class="fa-solid fa-building"></i>
+              </div>
+
+              <div class="profile-row">
+                <div>
+                  <span>Agência</span>
+                  <strong id="profileAgencia">-</strong>
+                </div>
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+
+              <div class="profile-row">
+                <div>
+                  <span>Regional</span>
+                  <strong id="profileRegional">-</strong>
+                </div>
+                <i class="fa-solid fa-user-group"></i>
+              </div>
+
+              <div class="profile-row">
+                <div>
+                  <span>Gestor imediato</span>
+                  <strong id="profileGestor">-</strong>
+                </div>
+                <i class="fa-solid fa-user-tie"></i>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- IFRAME -->
+        <section id="iframePage" class="page">
+          <h1 id="iframeTitle">Página</h1>
+          <p class="page-subtitle">Conteúdo carregado dentro do sistema.</p>
+
+          <div class="iframe-box">
+            <iframe id="contentFrame" src=""></iframe>
+          </div>
+        </section>
+
+        <!-- SCRIPTS -->
+        <section id="scriptsPage" class="page">
+          <h1>Scripts / Mensagens Padrão</h1>
+          <p class="page-subtitle">Pesquise, visualize e copie mensagens padronizadas.</p>
+
+          <div class="scripts-layout">
+            <div class="scripts-panel">
+              <div class="scripts-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="scriptSearchInput"
+                  placeholder="Pesquisar script..."
+                  autocomplete="off"
+                />
+              </div>
+
+              <div id="scriptsList" class="scripts-list"></div>
+            </div>
+
+            <div class="script-viewer">
+              <div class="script-viewer-header">
+                <div>
+                  <span class="viewer-label">Texto selecionado</span>
+                  <h2 id="selectedScriptTitle">Selecione um script</h2>
+                </div>
+
+                <button id="copyScriptButton" class="copy-script-button" type="button" disabled>
+                  <i class="fa-regular fa-copy"></i>
+                  Copiar
+                </button>
+              </div>
+
+              <pre id="selectedScriptText" class="script-text">Clique em um script na lista ao lado para visualizar o texto completo.</pre>
+
+              <span id="copyScriptFeedback" class="copy-feedback"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- REGISTROS DE RECLAMAÇÃO -->
+        <section id="complaintPage" class="page">
+          <h1>Registros de Reclamação</h1>
+          <p class="page-subtitle">
+            Selecione o tipo de reclamação, preencha os campos necessários e gere o texto padronizado para copiar.
+          </p>
+
+          <div class="complaint-layout">
+
+            <!-- FORMULÁRIO -->
+            <div class="complaint-form-card">
+
+              <div class="complaint-section-title">
+                <div class="complaint-title-icon">
+                  <i class="fa-solid fa-clipboard-list"></i>
+                </div>
+
+                <div>
+                  <h2>Dados da Reclamação</h2>
+                  <span>Os campos serão exibidos conforme o tipo selecionado.</span>
+                </div>
+              </div>
+
+              <div class="complaint-field complaint-full">
+                <label for="complaintType">Tipo de reclamação</label>
+                <select id="complaintType">
+                  <option value="">Selecione o tipo de reclamação...</option>
+                  <option value="cnr">Reclamação CNR</option>
+                  <option value="periodica">Reclamação de Fatura Periódica</option>
+                  <option value="mla">Fatura MLA - Duplicada após cadastro na TSEE</option>
+                  <option value="pagaNaoBaixada">Fatura paga e não baixada</option>
+                  <option value="leituraInicial">Erro de implementação de leitura inicial</option>
+                  <option value="geradora">Fatura da geradora não compensou excedentes</option>
+                  <option value="erroLeituraAtual">Erro leitura - leitura atual</option>
+                  <option value="prazos">Prazos</option>
+                </select>
+              </div>
+
+              <div class="complaint-field complaint-full">
+                <label>Reclamação aberta por insistência?</label>
+
+                <div class="complaint-radio-group">
+                  <label>
+                    <input type="radio" name="complaintInsistencia" value="sim" />
+                    Sim
+                  </label>
+
+                  <label>
+                    <input type="radio" name="complaintInsistencia" value="nao" checked />
+                    Não
+                  </label>
+                </div>
+              </div>
+
+              <div id="complaintDynamicFields" class="complaint-dynamic-fields">
+                <div class="complaint-empty-state">
+                  <i class="fa-regular fa-hand-pointer"></i>
+                  <strong>Selecione um tipo de reclamação</strong>
+                  <span>Após selecionar, os campos específicos aparecerão aqui.</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- TEXTO GERADO -->
+            <div class="complaint-result-card">
+
+              <div class="complaint-result-header">
+                <div>
+                  <span class="viewer-label">Texto final</span>
+                  <h2>Registro gerado</h2>
+                </div>
+
+                <button id="copyComplaintButton" class="copy-script-button" type="button" disabled>
+                  <i class="fa-regular fa-copy"></i>
+                  Copiar
+                </button>
+              </div>
+
+              <textarea
+                id="complaintResultText"
+                class="complaint-result-text"
+                readonly
+                placeholder="O texto da reclamação será gerado automaticamente aqui..."
+              ></textarea>
+
+              <span id="copyComplaintFeedback" class="copy-feedback"></span>
+
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- RODAPÉ DO PERFIL -->
+    <footer id="profileFooter" class="profile-footer hidden">
+      <div class="footer-item">
+        <i class="fa-solid fa-lock"></i>
+        <div>
+          <strong>SEGURANÇA</strong>
+          <span>Seus dados e registros estão protegidos.</span>
+        </div>
+      </div>
+
+      <div class="footer-item">
+        <i class="fa-solid fa-check"></i>
+        <div>
+          <strong>SESSÃO ATIVA</strong>
+          <span>Sua sessão permanecerá ativa até você sair.</span>
+        </div>
+      </div>
+
+      <div class="footer-item">
+        <i class="fa-regular fa-clock"></i>
+        <div>
+          <strong>ÚLTIMO ACESSO</strong>
+          <span id="lastAccessText">-</span>
+        </div>
+      </div>
+
+      <div class="footer-item">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <div>
+          <strong>ENCERRAMENTO</strong>
+          <span>Clique em “Sair” para encerrar sua sessão.</span>
+        </div>
+      </div>
+    </footer>
+
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
