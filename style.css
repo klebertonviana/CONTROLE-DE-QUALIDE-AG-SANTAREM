@@ -1008,16 +1008,7 @@ iframe {
 /* ================= AJUSTE DE ESCALA GERAL ================= */
 
 @media (min-width: 1200px) {
-  :root {
-    --ui-scale: 0.84;
-  }
-
-  .login-screen,
-  .app-screen {
-    width: calc(100% / var(--ui-scale));
-    height: calc(100vh / var(--ui-scale));
-    min-height: calc(100vh / var(--ui-scale));
-    transform: scale(var(--ui-scale));
-    transform-origin: top left;
+  body {
+    zoom: 0.85;
   }
 }
