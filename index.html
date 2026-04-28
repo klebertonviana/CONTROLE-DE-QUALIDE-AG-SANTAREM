@@ -114,6 +114,11 @@
           <button class="menu-item" data-page="scripts">
             <i class="fa-solid fa-comments"></i>
             <span>Scripts / Mensagens Padrão</span>
+          </button> 
+
+          <button class="menu-item" data-page="email" data-title="Gerador de Email">
+            <i class="fa-solid fa-envelope-open-text"></i>
+            <span>Gerador de Email</span>
           </button>
 
           <button class="menu-item" data-page="iframe" data-title="Plano de Contingência">
@@ -392,6 +397,48 @@
               <pre id="selectedScriptText" class="script-text">Clique em um script na lista ao lado para visualizar o texto completo.</pre>
 
               <span id="copyScriptFeedback" class="copy-feedback"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- GERADOR DE EMAIL -->
+        <section id="emailPage" class="page">
+          <h1>Gerador de Email</h1>
+          <p class="page-subtitle">Lista dos principais tipos de apoio para geração futura de e-mails padronizados.</p>
+
+          <div class="scripts-layout">
+            <div class="scripts-panel" style="width: 100%;">
+              <div class="scripts-search">
+                <i class="fa-solid fa-envelope-open-text"></i>
+                <input
+                  type="text"
+                  id="emailSearchInput"
+                  placeholder="Pesquisar tipo de e-mail..."
+                  autocomplete="off"
+                />
+              </div>
+
+              <div id="emailTypesList" class="scripts-list">
+                <button class="script-item" type="button"><strong>PODA DE ÁRVORE</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>FURTO / TRAFO QUEIMADO</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>CARTA DE ANUÊNCIA</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>CONEXÃO MLA</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>ÁREA DA MANUTENÇÃO</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>ÁREA DA EXPANSÃO</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>ÁREA DO GSTC</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>OFÍCIO DE ASSOCIAÇÃO DE MORADORES</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>OFÍCIO DE CLIENTE</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>OFÍCIO DE PODER PÚBLICO</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>RECEBIMENTO DE LIMINAR</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>DESCUMPRIMENTO DE LIMINAR / SENTENÇA</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>RETIRADA DE NEGATIVAÇÃO</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>CADASTRO DO CLIENTE MLA NO SISTEMA SAP APÓS LIGAÇÃO</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>CADASTRO DE MEDIDOR</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>ESTORNO DE TROCA DE TITULARIDADE COM FATURA(S)</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>CANCELAR DESLIGAMENTO - APÓS NOTA DE TROCA PROCEDENTE</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>PROCESSAR TROCA DE TITULARIDADE - APÓS NOTA PROCEDENTE</strong><span>Tipo de apoio</span></button>
+                <button class="script-item" type="button"><strong>E-MAIL PARA SUPERVISÃO - OUTROS NÃO ENQUADRADOS ANTERIORMENTE</strong><span>Tipo de apoio</span></button>
+              </div>
             </div>
           </div>
         </section>

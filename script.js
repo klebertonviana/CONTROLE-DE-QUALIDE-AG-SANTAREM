@@ -9,6 +9,14 @@ const usuarios = [
     gestor: "Kleberton Viana - Supervisor de agência III"
   },
   {
+    matricula: "22272",
+    nome: "MARCIELE FERREIRA SANTIAGO",
+    cargo: "Atendente Presencial I",
+    agencia: "Santarém",
+    regional: "Oeste",
+    gestor: "Kleberton Viana - Supervisor de agência III"
+  },
+  {
     matricula: "23719",
     nome: "MARLISSON JEAN CASTRO CRUZ",
     cargo: "Atendente Presencial I",
@@ -255,6 +263,12 @@ function navegar(title) {
 
   if (title === "Scripts / Mensagens Padrão") {
     abrirPagina("scriptsPage");
+    iframe.src = "";
+    return;
+  }
+
+  if (title === "Gerador de Email") {
+    abrirPagina("emailPage");
     iframe.src = "";
     return;
   }
@@ -905,5 +919,20 @@ if (copyComplaintButton) {
       copyComplaintButton.innerHTML = `<i class="fa-regular fa-copy"></i> Copiar`;
       copyComplaintFeedback.textContent = "";
     }, 2000);
+  });
+}
+
+const emailSearchInput = document.getElementById("emailSearchInput");
+const emailTypesList = document.getElementById("emailTypesList");
+
+if (emailSearchInput && emailTypesList) {
+  emailSearchInput.addEventListener("input", () => {
+    const termo = emailSearchInput.value.toLowerCase().trim();
+    const itens = emailTypesList.querySelectorAll(".script-item");
+
+    itens.forEach(item => {
+      const texto = item.innerText.toLowerCase();
+      item.style.display = texto.includes(termo) ? "block" : "none";
+    });
   });
 }
