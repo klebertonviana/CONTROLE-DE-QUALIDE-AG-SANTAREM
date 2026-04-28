@@ -273,6 +273,12 @@ function navegar(title) {
     return;
   }
 
+  if (title === "Registros de Reclamação") {
+    abrirPagina("complaintPage");
+    iframe.src = "";
+    return;
+  }
+
   if (linksDentro[title]) {
     abrirPagina("iframePage");
     iframeTitle.textContent = title;
@@ -283,12 +289,6 @@ function navegar(title) {
   if (linksFora[title]) {
     window.open(linksFora[title], "_blank");
     return;
-  }
-
-  if (title === "Registros de Reclamação") {
-  abrirPagina("complaintPage");
-  iframe.src = "";
-  return;
   }
 
   abrirPagina("homePage");
@@ -373,7 +373,6 @@ Matrícula:
 📌 Presença:
 Bateu ponto: ( ) Sim ( ) Não → Por quê:
 Realizou DDS: ( ) Sim ( ) Não → Por quê:
-Preencheu seu TMA: ( ) Sim ( ) Não → Por quê:
 
 📌 Acessos às ferramentas?
 SGA:
@@ -461,7 +460,9 @@ const selectedText = document.getElementById("selectedScriptText");
 const copyButton = document.getElementById("copyScriptButton");
 const copyFeedback = document.getElementById("copyScriptFeedback");
 
-// ================= RENDER LISTA =================
+let scriptSelecionado = null;
+
+// ================= RENDER LISTA MODERNA =================
 function renderScripts(filtro = "") {
   if (!scriptsList) return;
 
@@ -469,32 +470,55 @@ function renderScripts(filtro = "") {
 
   const termo = filtro.toLowerCase().trim();
 
-  const filtrados = scripts.filter(s =>
-    s.titulo.toLowerCase().includes(termo) ||
-    s.texto.toLowerCase().includes(termo)
+  const filtrados = scripts.filter(script =>
+    script.titulo.toLowerCase().includes(termo) ||
+    script.texto.toLowerCase().includes(termo)
   );
 
   if (filtrados.length === 0) {
-    scriptsList.innerHTML = `<div class="script-empty">Nenhum script encontrado.</div>`;
+    scriptsList.innerHTML = `
+      <div class="script-empty">
+        <i class="fa-regular fa-folder-open"></i>
+        <strong>Nenhum script encontrado</strong>
+        <span>Tente pesquisar por outro termo.</span>
+      </div>
+    `;
     return;
   }
 
-  filtrados.forEach(script => {
+  filtrados.forEach((script, index) => {
     const item = document.createElement("button");
     item.type = "button";
     item.className = "script-item";
+
     item.innerHTML = `
       <strong>${script.titulo}</strong>
-      <span>Clique para visualizar</span>
+      <span>Visualizar mensagem padrão</span>
     `;
 
+    item.style.opacity = "0";
+    item.style.transform = "translateY(6px)";
+
+    setTimeout(() => {
+      item.style.opacity = "1";
+      item.style.transform = "translateY(0)";
+    }, index * 35);
+
     item.addEventListener("click", () => {
-      document.querySelectorAll(".script-item").forEach(i => i.classList.remove("selected"));
+      document
+        .querySelectorAll("#scriptsList .script-item")
+        .forEach(i => i.classList.remove("selected"));
+
       item.classList.add("selected");
+
+      scriptSelecionado = script;
 
       selectedTitle.textContent = script.titulo;
       selectedText.textContent = script.texto;
+
       copyButton.disabled = false;
+      copyButton.innerHTML = `<i class="fa-regular fa-copy"></i> Copiar`;
+      copyButton.classList.remove("copied");
       copyFeedback.textContent = "";
     });
 
@@ -508,32 +532,32 @@ if (searchInput && scriptsList && selectedTitle && selectedText && copyButton &&
 
   searchInput.addEventListener("input", () => {
     renderScripts(searchInput.value);
+
+    selectedTitle.textContent = "Selecione um script";
+    selectedText.textContent = "Clique em um script ao lado para visualizar o conteúdo completo.";
+    copyButton.disabled = true;
+    copyButton.innerHTML = `<i class="fa-regular fa-copy"></i> Copiar`;
+    copyButton.classList.remove("copied");
+    copyFeedback.textContent = "";
+    scriptSelecionado = null;
   });
 
   copyButton.addEventListener("click", async () => {
-    await navigator.clipboard.writeText(selectedText.textContent);
+    if (!scriptSelecionado) return;
 
-    copyFeedback.textContent = "Copiado com sucesso!";
+    await navigator.clipboard.writeText(scriptSelecionado.texto);
+
+    copyButton.classList.add("copied");
+    copyButton.innerHTML = `<i class="fa-solid fa-check"></i> Copiado!`;
+    copyFeedback.textContent = "Texto copiado com sucesso!";
+
     setTimeout(() => {
+      copyButton.classList.remove("copied");
+      copyButton.innerHTML = `<i class="fa-regular fa-copy"></i> Copiar`;
       copyFeedback.textContent = "";
     }, 2000);
   });
 }
-
-copyButton.addEventListener("click", async () => {
-  await navigator.clipboard.writeText(selectedText.textContent);
-
-  copyButton.classList.add("copied");
-  copyButton.innerHTML = `<i class="fa-solid fa-check"></i> Copiado!`;
-
-  copyFeedback.textContent = "Texto copiado com sucesso!";
-
-  setTimeout(() => {
-    copyButton.classList.remove("copied");
-    copyButton.innerHTML = `<i class="fa-regular fa-copy"></i> Copiar`;
-    copyFeedback.textContent = "";
-  }, 2000);
-});
 
 // ================= REGISTROS DE RECLAMAÇÃO =================
 
@@ -922,17 +946,121 @@ if (copyComplaintButton) {
   });
 }
 
+// ================= BUSCA GERADOR DE EMAIL =================
 const emailSearchInput = document.getElementById("emailSearchInput");
 const emailTypesList = document.getElementById("emailTypesList");
 
 if (emailSearchInput && emailTypesList) {
+  const emailItems = emailTypesList.querySelectorAll(".script-item");
+
+  emailItems.forEach((item, index) => {
+    item.style.opacity = "0";
+    item.style.transform = "translateY(6px)";
+
+    setTimeout(() => {
+      item.style.opacity = "1";
+      item.style.transform = "translateY(0)";
+    }, index * 30);
+
+    item.addEventListener("click", () => {
+      emailItems.forEach(i => i.classList.remove("selected"));
+      item.classList.add("selected");
+    });
+  });
+
   emailSearchInput.addEventListener("input", () => {
     const termo = emailSearchInput.value.toLowerCase().trim();
-    const itens = emailTypesList.querySelectorAll(".script-item");
+    let encontrados = 0;
 
-    itens.forEach(item => {
+    emailItems.forEach(item => {
       const texto = item.innerText.toLowerCase();
-      item.style.display = texto.includes(termo) ? "block" : "none";
+      const encontrou = texto.includes(termo);
+
+      item.style.display = encontrou ? "flex" : "none";
+
+      if (encontrou) encontrados++;
     });
+
+    let empty = document.getElementById("emailEmptyState");
+
+    if (encontrados === 0) {
+      if (!empty) {
+        empty = document.createElement("div");
+        empty.id = "emailEmptyState";
+        empty.className = "script-empty";
+        empty.innerHTML = `
+          <i class="fa-regular fa-folder-open"></i>
+          <strong>Nenhum tipo de e-mail encontrado</strong>
+          <span>Tente pesquisar por outro termo.</span>
+        `;
+        emailTypesList.appendChild(empty);
+      }
+    } else if (empty) {
+      empty.remove();
+    }
+  });
+}
+
+// ================= BUSCA CAMPOS RECLAMAÇÃO =================
+const complaintFilterInput = document.getElementById("complaintFilterInput");
+
+if (complaintFilterInput) {
+  complaintFilterInput.addEventListener("input", () => {
+    const termo = complaintFilterInput.value.toLowerCase().trim();
+
+    document.querySelectorAll("#complaintDynamicFields .complaint-field").forEach(field => {
+      const texto = field.innerText.toLowerCase();
+      field.style.display = texto.includes(termo) ? "block" : "none";
+    });
+  });
+}
+
+// ================= BUSCA TIPO DE RECLAMAÇÃO =================
+const complaintTypeSearchInput = document.getElementById("complaintTypeSearchInput");
+const complaintTypesList = document.getElementById("complaintTypesList");
+
+if (complaintTypeSearchInput && complaintTypesList && complaintType) {
+  const complaintTypeItems = complaintTypesList.querySelectorAll(".script-item");
+
+  complaintTypeSearchInput.addEventListener("focus", () => {
+    complaintTypesList.classList.remove("hidden");
+  });
+
+  complaintTypeSearchInput.addEventListener("input", () => {
+    const termo = complaintTypeSearchInput.value.toLowerCase().trim();
+
+    complaintTypesList.classList.remove("hidden");
+
+    complaintTypeItems.forEach(item => {
+      const texto = item.innerText.toLowerCase();
+      item.style.display = texto.includes(termo) ? "flex" : "none";
+    });
+  });
+
+  complaintTypeItems.forEach(item => {
+    item.addEventListener("click", () => {
+      complaintTypeItems.forEach(i => i.classList.remove("selected"));
+      item.classList.add("selected");
+
+      const tipo = item.dataset.value;
+      const titulo = item.querySelector("strong").innerText;
+
+      complaintType.value = tipo;
+      complaintTypeSearchInput.value = titulo;
+
+      montarCamposReclamacao(tipo);
+
+      complaintTypesList.classList.add("hidden");
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    const clicouDentro =
+      complaintTypeSearchInput.contains(e.target) ||
+      complaintTypesList.contains(e.target);
+
+    if (!clicouDentro) {
+      complaintTypesList.classList.add("hidden");
+    }
   });
 }

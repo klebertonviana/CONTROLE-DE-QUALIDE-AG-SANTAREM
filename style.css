@@ -692,36 +692,49 @@ iframe {
   }
 }
 
-/* ================= SCRIPTS ================= */
+/* ================= SCRIPTS / BUSCA MODERNA ================= */
 
 .scripts-layout {
   display: flex;
-  gap: 20px;
+  gap: 22px;
   height: 100%;
 }
 
 .scripts-panel {
-  width: 30%;
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  padding: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  width: 32%;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e4e7ec;
+  padding: 18px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
 }
 
 .scripts-search {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #f3f4f6;
-  padding: 12px;
-  border-radius: 10px;
-  transition: 0.2s;
+  gap: 12px;
+  background: #ffffff;
+  padding: 13px 14px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(134, 22, 48, 0.28);
+  transition: all 0.22s ease;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.scripts-search:hover {
+  border-color: rgba(134, 22, 48, 0.35);
+  background: #ffffff;
+}
+
+.scripts-search i {
+  color: var(--primary);
+  font-size: 15px;
 }
 
 .scripts-search:focus-within {
-  border: 1px solid #7b0f1a;
-  background: #fff;
+  border-color: rgba(134, 22, 48, 0.45);
+  box-shadow: 0 0 0 3px rgba(134, 22, 48, 0.08);
+  transform: translateY(-1px);
 }
 
 .scripts-search input {
@@ -730,83 +743,174 @@ iframe {
   width: 100%;
   outline: none;
   font-size: 14px;
+  color: #111827;
+}
+
+.scripts-search input::placeholder {
+  color: #9ca3af;
 }
 
 .scripts-list {
-  margin-top: 15px;
-  max-height: 450px;
+  margin-top: 16px;
+  max-height: 470px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.scripts-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scripts-list::-webkit-scrollbar-thumb {
+  background: rgba(134, 22, 48, 0.35);
+  border-radius: 20px;
+}
+
+.scripts-list::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .script-item {
-  padding: 12px;
-  border-radius: 8px;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 14px 15px;
+  border-radius: 13px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.22s ease;
   font-size: 14px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative;
+}
+
+.script-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 4px;
+  border-radius: 0 8px 8px 0;
+  background: transparent;
+  transition: 0.22s ease;
+}
+
+.script-item strong {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.script-item span {
+  color: #6b7280;
+  font-size: 12px;
 }
 
 .script-item:hover {
-  background: #f3f4f6;
+  border-color: rgba(134, 22, 48, 0.35);
+  background: #fffafb;
+  transform: translateX(3px);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.07);
+}
+
+.script-item:hover::before {
+  background: var(--primary);
+}
+
+.script-item.selected {
+  border-color: rgba(134, 22, 48, 0.55);
+  background: #fff5f7;
+  box-shadow: 0 8px 18px rgba(134, 22, 48, 0.12);
+}
+
+.script-item.selected::before {
+  background: var(--primary);
 }
 
 .script-viewer {
   flex: 1;
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  padding: 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e4e7ec;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  gap: 14px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
 }
 
 .script-viewer-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #eef0f3;
 }
 
 .viewer-label {
-  font-size: 12px;
-  color: #6b7280;
+  font-size: 11px;
+  color: #8a93a3;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.script-viewer h2 {
+  margin-top: 4px;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 800;
 }
 
 .script-text {
   white-space: pre-wrap;
   background: #f9fafb;
-  padding: 15px;
-  border-radius: 8px;
+  padding: 18px;
+  border-radius: 13px;
   border: 1px solid #e5e7eb;
   font-size: 14px;
+  line-height: 1.6;
+  color: #1f2933;
+  min-height: 360px;
 }
 
 .copy-script-button {
-  background: #7b0f1a;
+  background: linear-gradient(180deg, var(--primary-soft) 0%, var(--primary) 100%);
   color: #fff;
   border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.22s ease;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 5px 14px rgba(134, 22, 48, 0.22);
 }
 
 .copy-script-button:hover {
-  background: #5a0b13;
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #a92745 0%, var(--primary-dark) 100%);
 }
 
 .copy-script-button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .copy-feedback {
   font-size: 12px;
   color: #16a34a;
+  font-weight: 700;
 }
 
 .copy-script-button.copied {
@@ -818,44 +922,92 @@ iframe {
   background: #16a34a;
 }
 
+.script-empty {
+  min-height: 150px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  background: #f9fafb;
+  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  text-align: center;
+  padding: 20px;
+}
+
+.script-empty i {
+  font-size: 28px;
+  color: var(--primary);
+}
+
+.script-empty strong {
+  color: #374151;
+  font-size: 14px;
+}
+
+.script-empty span {
+  font-size: 12px;
+}
+
+.email-types-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 10px;
+  max-height: 520px;
+}
+
+@media (max-width: 1200px) {
+  .email-types-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .email-types-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ================= REGISTROS DE RECLAMAÇÃO ================= */
 
 .complaint-layout {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   align-items: flex-start;
 }
 
 .complaint-form-card,
 .complaint-result-card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e4e7ec;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
 }
 
 .complaint-form-card {
   width: 42%;
-  padding: 20px;
+  padding: 22px;
 }
 
 .complaint-result-card {
   flex: 1;
-  padding: 20px;
+  padding: 22px;
 }
 
 .complaint-section-title {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   padding-bottom: 18px;
   margin-bottom: 18px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #eef0f3;
 }
 
 .complaint-title-icon {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   background: var(--icon-bg);
   color: var(--primary);
   border-radius: 50%;
@@ -863,6 +1015,7 @@ iframe {
   align-items: center;
   justify-content: center;
   font-size: 18px;
+  box-shadow: inset 0 0 0 1px rgba(134, 22, 48, 0.12);
 }
 
 .complaint-section-title h2,
@@ -883,24 +1036,34 @@ iframe {
 
 .complaint-field label {
   display: block;
-  font-size: 13px;
-  font-weight: 700;
-  color: #374151;
-  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #6b7280;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .complaint-field input,
 .complaint-field select,
 .complaint-field textarea {
   width: 100%;
-  border: 1px solid #d8dde6;
-  border-radius: 8px;
-  padding: 10px 12px;
+  border: 1px solid #e4e7ec;
+  border-radius: 10px;
+  padding: 11px 12px;
   font-size: 13px;
   color: #111827;
-  background: #fff;
+  background: #ffffff;
   outline: none;
-  transition: 0.2s;
+  transition: all 0.2s ease;
+}
+
+.complaint-field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%236b7280' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.1 1.02l-4.24 4.5a.75.75 0 01-1.1 0l-4.24-4.5a.75.75 0 01.02-1.06z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 34px;
 }
 
 .complaint-field textarea {
@@ -911,51 +1074,53 @@ iframe {
 .complaint-field input:focus,
 .complaint-field select:focus,
 .complaint-field textarea:focus {
-  border-color: rgba(136, 22, 45, 0.55);
+  border-color: rgba(134, 22, 48, 0.55);
   box-shadow: 0 0 0 3px rgba(134, 22, 48, 0.08);
 }
 
 .complaint-radio-group {
   display: flex;
-  gap: 16px;
+  gap: 18px;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 10px 12px;
+  border-radius: 10px;
+  padding: 12px;
 }
 
 .complaint-radio-group label {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   margin: 0;
   font-size: 13px;
   cursor: pointer;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #374151;
 }
 
 .complaint-dynamic-fields {
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .complaint-empty-state {
-  min-height: 190px;
+  min-height: 200px;
   border: 1px dashed #cbd5e1;
-  border-radius: 10px;
+  border-radius: 14px;
   background: #f9fafb;
   color: #6b7280;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   text-align: center;
   padding: 20px;
 }
 
 .complaint-empty-state i {
-  font-size: 28px;
+  font-size: 30px;
   color: var(--primary);
-  margin-bottom: 4px;
 }
 
 .complaint-empty-state strong {
@@ -963,31 +1128,38 @@ iframe {
   font-size: 14px;
 }
 
+.complaint-empty-state span {
+  font-size: 12px;
+}
+
 .complaint-result-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
   margin-bottom: 14px;
+  border-bottom: 1px solid #eef0f3;
 }
 
 .complaint-result-text {
   width: 100%;
-  min-height: 580px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #f9fafb;
-  color: #111827;
-  padding: 15px;
+  min-height: 600px;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1f2933;
+  padding: 16px;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.6;
   resize: vertical;
   outline: none;
   white-space: pre-wrap;
 }
 
 .complaint-result-text:focus {
-  border-color: rgba(123, 15, 26, 0.45);
-  box-shadow: 0 0 0 3px rgba(123, 15, 26, 0.08);
+  border-color: rgba(134, 22, 48, 0.45);
+  box-shadow: 0 0 0 3px rgba(134, 22, 48, 0.08);
 }
 
 @media (max-width: 1200px) {
@@ -1081,4 +1253,126 @@ iframe {
     height: calc(100vh - 170px);
     min-height: 500px;
   }
+}
+
+/* ================= REFINO CORPORATIVO FNQ / ISO ================= */
+
+/* Suavidade geral */
+button,
+.home-card,
+.menu-item,
+.script-item,
+.copy-script-button,
+.logout-button,
+.user-button {
+  transition: all 0.2s ease;
+}
+
+/* Header mais premium */
+.app-header,
+.login-topbar {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.16);
+}
+
+/* Menu lateral mais sofisticado */
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.13);
+  transform: translateX(3px);
+}
+
+.menu-item.active {
+  background: rgba(84, 10, 30, 0.68);
+  box-shadow: inset 4px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Cards com padrão corporativo */
+.home-card {
+  border: 1px solid #e4e7ec;
+}
+
+.home-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.11);
+}
+
+/* Ícones mais elegantes */
+.card-icon,
+.profile-title-icon,
+.profile-row > i,
+.complaint-title-icon {
+  box-shadow: inset 0 0 0 1px rgba(134, 22, 48, 0.12);
+}
+
+.home-card:hover .card-icon {
+  transform: scale(1.06);
+}
+
+/* Botão de login mais forte */
+.login-card button,
+.copy-script-button {
+  box-shadow: 0 5px 14px rgba(134, 22, 48, 0.22);
+}
+
+.login-card button:hover,
+.copy-script-button:hover {
+  transform: translateY(-1px);
+}
+
+/* Caixas principais mais limpas */
+.login-card,
+.profile-card,
+.scripts-panel,
+.script-viewer,
+.complaint-form-card,
+.complaint-result-card,
+.iframe-box {
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+/* Títulos com presença corporativa */
+.main-content h1 {
+  letter-spacing: -0.3px;
+}
+
+/* Campo de busca mais refinado */
+.scripts-search {
+  border: 1px solid transparent;
+}
+
+.scripts-search:focus-within {
+  border-color: rgba(134, 22, 48, 0.45);
+  box-shadow: 0 0 0 3px rgba(134, 22, 48, 0.08);
+}
+
+/* Melhor sensação nos formulários */
+.complaint-field input:focus,
+.complaint-field select:focus,
+.complaint-field textarea:focus,
+.login-card input:focus {
+  border-color: rgba(134, 22, 48, 0.55);
+  box-shadow: 0 0 0 3px rgba(134, 22, 48, 0.08);
+}
+
+/* ================= BUSCA REGISTRO DE RECLAMAÇÃO ================= */
+
+.complaint-search-box {
+  margin: 14px 0 18px;
+}
+
+/* melhora encaixe visual */
+.complaint-form-card .scripts-search {
+  width: 100%;
+}
+
+/* leve refinamento para não ficar “colado” */
+.complaint-form-card {
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.complaint-types-list {
+  margin-top: 10px;
+  max-height: 260px;
+  overflow-y: auto;
 }
