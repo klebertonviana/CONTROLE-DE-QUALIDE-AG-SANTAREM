@@ -1266,7 +1266,6 @@ iframe {
     height: calc(100vh - 145px);
     min-height: 460px;
   }
-}
 
 /* ===== AJUSTE PERFIL ===== */
 
@@ -1314,7 +1313,6 @@ iframe {
   .profile-footer {
     height: 78px;
   }
-}
 
 /* ================= REFINO CORPORATIVO FNQ / ISO ================= */
 
@@ -1436,14 +1434,4 @@ button,
   margin-top: 10px;
   max-height: 260px;
   overflow-y: auto;
-}
-
-/* ================= LIMITE DE LARGURA (PADRÃO CORPORATIVO) ================= */
-
-.app-screen {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg);
 }
