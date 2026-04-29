@@ -1268,6 +1268,54 @@ iframe {
   }
 }
 
+/* ===== AJUSTE PERFIL ===== */
+
+  .profile-card {
+    padding: 24px 28px;
+    gap: 28px;
+  }
+
+  .profile-avatar {
+    width: 126px;
+    height: 126px;
+    flex: 0 0 126px;
+    font-size: 62px;
+  }
+
+  .profile-title {
+    padding-bottom: 16px;
+    gap: 12px;
+  }
+
+  .profile-title-icon,
+  .profile-row > i {
+    width: 38px;
+    height: 38px;
+    font-size: 15px;
+  }
+
+  .profile-title h2 {
+    font-size: 18px;
+  }
+
+  .profile-row {
+    min-height: 58px;
+    padding: 10px 0;
+  }
+
+  .profile-row span {
+    font-size: 11px;
+  }
+
+  .profile-row strong {
+    font-size: 13px;
+  }
+
+  .profile-footer {
+    height: 78px;
+  }
+}
+
 /* ================= REFINO CORPORATIVO FNQ / ISO ================= */
 
 /* Suavidade geral */
