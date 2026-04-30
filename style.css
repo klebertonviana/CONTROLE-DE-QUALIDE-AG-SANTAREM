@@ -697,7 +697,7 @@ iframe {
 .scripts-layout {
   display: flex;
   gap: 22px;
-  height: 100%;
+  height: calc(100vh - 160px); /* controla altura total */
 }
 
 .scripts-panel {
@@ -1434,4 +1434,119 @@ button,
   margin-top: 10px;
   max-height: 260px;
   overflow-y: auto;
+}
+
+/* ================= GERADOR DE EMAIL - RESULTADO ================= */
+
+.email-result-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.email-block {
+  background: #ffffff;
+  border: 1px solid #e4e7ec;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.email-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.email-block-header strong {
+  font-size: 12px;
+  font-weight: 800;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.email-block textarea {
+  width: 100%;
+  min-height: 70px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  resize: vertical;
+  outline: none;
+  font-size: 13px;
+  color: #111827;
+  background: #f9fafb;
+  line-height: 1.5;
+}
+
+#emailBody {
+  min-height: 180px;
+}
+
+.email-block .copy-script-button {
+  padding: 7px 11px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+/* ================= SCROLL INDEPENDENTE ================= */
+
+.scripts-layout {
+  display: flex;
+  gap: 22px;
+  height: calc(100vh - 160px);
+}
+
+.scripts-panel {
+  width: 32%;
+  overflow-y: auto;
+}
+
+.script-viewer {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ================= AJUSTE ALTURA EMAIL ================= */
+
+.scripts-layout {
+  align-items: stretch; /* 👈 força os dois lados a ficarem iguais */
+}
+
+.scripts-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.scripts-list {
+  flex: 1; /* 👈 faz a lista crescer até o final */
+  max-height: none; /* remove limite travado */
+}
+
+/* ================= AVISOS - CARTA DE ANUÊNCIA ================= */
+
+.aviso-carta {
+  background: #fff8f8;
+  border: 1px solid #efc9cf;
+  padding: 18px 20px;
+  border-radius: 12px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.aviso-carta strong {
+  font-size: 17px;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.aviso-carta span {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #1f2933;
+  white-space: pre-line;
 }

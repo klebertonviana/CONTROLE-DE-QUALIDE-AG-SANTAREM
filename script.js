@@ -1064,3 +1064,653 @@ if (complaintTypeSearchInput && complaintTypesList && complaintType) {
     }
   });
 }
+
+// ================= GERADOR DE EMAIL =================
+
+let emailTipoSelecionado = "";
+
+// clique nos tipos de email
+document.querySelectorAll("#emailTypesList .script-item").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const tipo = btn.dataset.type || "";
+
+    document.querySelectorAll("#emailTypesList .script-item").forEach(i => i.classList.remove("selected"));
+    btn.classList.add("selected");
+
+    document.getElementById("selectedEmailTitle").textContent = btn.querySelector("strong")?.innerText || "E-mail selecionado";
+
+    emailTipoSelecionado = tipo;
+
+    document.getElementById("emailTo").value = "";
+    document.getElementById("emailCc").value = "";
+    document.getElementById("emailSubject").value = "";
+    document.getElementById("emailBody").value = "";
+
+    if (tipo === "poda") {
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Número da Autorização da SEMMA</label>
+          <input id="email_numero" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Solicitante</label>
+          <input id="email_solicitante" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Conta contrato</label>
+          <input id="email_conta" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Telefone</label>
+          <input id="email_telefone" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>E-mail</label>
+          <input id="email_email" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Rua</label>
+          <input id="email_rua" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Número</label>
+          <input id="email_numero_endereco" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Complemento</label>
+          <input id="email_complemento" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Bairro</label>
+          <input id="email_bairro" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Cidade</label>
+          <input id="email_cidade" autocomplete="off">
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = false;
+
+    } else if (tipo === "furtoTrafoQueimado") {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Tipo de ocorrência</label>
+          <select id="email_ocorrencia">
+            <option value="">Selecione</option>
+            <option value="furto">FURTO DE TRANSFORMADOR</option>
+            <option value="queimado">TRAFO QUEIMADO</option>
+          </select>
+        </div>
+
+        <div class="complaint-field">
+          <label>Conta contrato</label>
+          <input id="email_conta" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Nota</label>
+          <input id="email_nota" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Cidade do TRAFO</label>
+          <input id="email_cidade" autocomplete="off">
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = false;
+
+    } else if (tipo === "conexaoMla") {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Nome da comunidade</label>
+          <input id="email_comunidade" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Nome do cliente</label>
+          <input id="email_cliente" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Telefone para retorno</label>
+          <input id="email_telefone" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>E-mail para retorno</label>
+          <input id="email_email" autocomplete="off">
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = false;
+
+    } else if (tipo === "oficioAssociacaoMoradores") {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Nome da associação (Ex: Bairro da Floresta / Comunidade Pérola do Maicá)</label>
+          <input id="email_associacao" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Solicitante</label>
+          <input id="email_solicitante" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Telefone para retorno</label>
+          <input id="email_telefone" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>E-mail para retorno</label>
+          <input id="email_email" autocomplete="off">
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = false;
+
+    } else if (tipo === "transferenciaTrocaTitularidadeFaturas") {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Motivo da troca de titularidade</label>
+          <textarea id="email_motivo"></textarea>
+        </div>
+
+        <div class="complaint-field">
+          <label>Conta contrato atual</label>
+          <input id="email_conta" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Instalação</label>
+          <input id="email_instalacao" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Titular atual</label>
+          <input id="email_titular_atual" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Parceiro do atual titular</label>
+          <input id="email_parceiro_atual" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Novo titular</label>
+          <input id="email_novo_titular" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Parceiro do novo titular</label>
+          <input id="email_parceiro_novo" autocomplete="off">
+        </div>
+
+        <div id="emailFaturasArea">
+          <div class="complaint-field">
+            <label>Referência da fatura</label>
+            <input class="email_fatura_referencia" autocomplete="off" placeholder="Ex: 03/2026">
+          </div>
+
+          <div class="complaint-field">
+            <label>Valor da fatura</label>
+            <input class="email_fatura_valor" autocomplete="off" placeholder="Ex: R$ 796,64">
+          </div>
+        </div>
+
+        <div class="email-actions">
+          <button id="addFaturaButton" class="copy-script-button" type="button">
+            <i class="fa-solid fa-plus"></i>
+            Adicionar fatura
+          </button>
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = false;
+
+      document.getElementById("addFaturaButton").addEventListener("click", () => {
+        const area = document.getElementById("emailFaturasArea");
+
+        const linha = document.createElement("div");
+        linha.className = "email-fatura-row";
+        linha.innerHTML = `
+          <div class="complaint-field">
+            <label>Referência da fatura</label>
+            <input class="email_fatura_referencia" autocomplete="off" placeholder="Ex: 04/2026">
+          </div>
+
+          <div class="complaint-field">
+            <label>Valor da fatura</label>
+            <input class="email_fatura_valor" autocomplete="off" placeholder="Ex: R$ 1.645,46">
+          </div>
+        `;
+
+        area.appendChild(linha);
+      });
+
+    } else if (tipo === "cartaAnuencia") {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>O status da intimação está PROTESTADO ou CONFIRMADO?</label>
+          <select id="email_status_intimacao">
+            <option value="">Selecione</option>
+            <option value="confirmado">CONFIRMADO</option>
+            <option value="protestado">PROTESTADO</option>
+          </select>
+        </div>
+
+        <div id="emailCartaAnuenciaArea"></div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = true;
+
+      document.getElementById("email_status_intimacao").addEventListener("change", () => {
+        const status = document.getElementById("email_status_intimacao").value;
+        const area = document.getElementById("emailCartaAnuenciaArea");
+
+        document.getElementById("emailTo").value = "";
+        document.getElementById("emailCc").value = "";
+        document.getElementById("emailSubject").value = "";
+        document.getElementById("emailBody").value = "";
+        document.getElementById("generateEmailButton").disabled = true;
+
+        if (status === "confirmado") {
+          area.innerHTML = `
+            <div class="complaint-empty-state aviso-carta">
+              <i class="fa-solid fa-circle-info"></i>
+              <strong>Atenção</strong>
+              <span>
+Prezado colaborador,
+
+Caso o status da intimação esteja como CONFIRMADO, orientar o cliente a comparecer ao cartório no qual foi intimado para realizar o pagamento da fatura, acrescido da taxa de intimação junto ao órgão competente.
+
+Caso o cliente tenha efetuado o pagamento da fatura enquanto o status da intimação ainda constava como CONFIRMADO, informar que o título seguirá para protesto, conforme a Lei do Protesto (Lei nº 9.492/1997). Nessa situação, será necessário aguardar a atualização do status da intimação para PROTESTADO, para que então seja possível solicitar a carta de anuência.
+              </span>
+            </div>
+          `;
+        }
+
+        if (status === "protestado") {
+          area.innerHTML = `
+            <div class="complaint-field">
+              <label>O débito da fatura já se encontra arrecadado no sistema SAP CRM?</label>
+              <select id="email_debito_arrecadado">
+                <option value="">Selecione</option>
+                <option value="nao">NÃO</option>
+                <option value="sim">SIM</option>
+              </select>
+            </div>
+
+            <div id="emailCartaAnuenciaDados"></div>
+          `;
+
+          document.getElementById("email_debito_arrecadado").addEventListener("change", () => {
+            const arrecadado = document.getElementById("email_debito_arrecadado").value;
+            const dados = document.getElementById("emailCartaAnuenciaDados");
+
+            document.getElementById("emailTo").value = "";
+            document.getElementById("emailCc").value = "";
+            document.getElementById("emailSubject").value = "";
+            document.getElementById("emailBody").value = "";
+            document.getElementById("generateEmailButton").disabled = true;
+
+            if (arrecadado === "nao") {
+              dados.innerHTML = `
+                <div class="complaint-empty-state aviso-carta">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <strong>Atenção</strong>
+                  <span>
+Prezado colaborador,
+
+Considerando que o referido débito ainda não se encontra atualizado no sistema da Equatorial (SAP CRM), orientamos aguardar a efetivação da arrecadação, a qual ocorre de forma automática.
+
+Ressaltamos que somente após a devida atualização no sistema será possível realizar a solicitação da carta de anuência.
+                  </span>
+                </div>
+              `;
+            }
+
+            if (arrecadado === "sim") {
+              dados.innerHTML = `
+                <div class="complaint-field">
+                  <label>Titular</label>
+                  <input id="email_titular" autocomplete="off">
+                </div>
+
+                <div class="complaint-field">
+                  <label>CPF / CNPJ</label>
+                  <input id="email_documento" autocomplete="off">
+                </div>
+
+                <div class="complaint-field">
+                  <label>Conta contrato</label>
+                  <input id="email_conta" autocomplete="off">
+                </div>
+              `;
+
+              document.getElementById("generateEmailButton").disabled = false;
+            }
+          });
+        }
+      });
+
+    } else {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-empty-state">
+          <i class="fa-regular fa-envelope"></i>
+          <strong>Modelo ainda não configurado</strong>
+          <span>Esse tipo de e-mail será configurado posteriormente.</span>
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = true;
+    }
+
+  });
+});
+
+
+// ================= GERAR EMAIL =================
+
+document.getElementById("generateEmailButton").addEventListener("click", () => {
+
+  if (emailTipoSelecionado === "poda") {
+    const numero = document.getElementById("email_numero")?.value.trim() || "";
+    const solicitante = document.getElementById("email_solicitante")?.value.trim() || "";
+    const conta = document.getElementById("email_conta")?.value.trim() || "";
+    const telefone = document.getElementById("email_telefone")?.value.trim() || "";
+    const email = document.getElementById("email_email")?.value.trim() || "";
+
+    const rua = document.getElementById("email_rua")?.value.trim() || "";
+    const numeroEndereco = document.getElementById("email_numero_endereco")?.value.trim() || "";
+    const complemento = document.getElementById("email_complemento")?.value.trim() || "";
+    const bairro = document.getElementById("email_bairro")?.value.trim() || "";
+    const cidade = document.getElementById("email_cidade")?.value.trim() || "";
+
+    const endereco = `${rua}, Nº ${numeroEndereco}${complemento ? ", " + complemento : ""}, Bairro: ${bairro}, Cidade: ${cidade}`;
+    const hoje = new Date().toLocaleDateString("pt-BR");
+
+    document.getElementById("emailTo").value =
+      "vanessa.maia@equatorialenergia.com.br; jerlison.tavares@equatorialenergia.com.br; jose.junior1@equatorialenergia.com.br";
+
+    document.getElementById("emailCc").value =
+      "paola.moreira@equatorialenergia.com.br; lana.gomes@equatorialenergia.com.br; nayra.pinto@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; aline.riker@equatorialenergia.com.br; raiane.bentes@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      `SOLICITAÇÃO PODA DE ÁRVORE Nº ${numero} - CONTA CONTRATO: ${conta} – ${cidade}`.toUpperCase();
+
+    document.getElementById("emailBody").value =
+`Boa tarde,
+
+Prezados,
+
+Segue solicitação poda de árvore entregue hoje ${hoje} na agência Santarém, cliente está ciente que será realizado a comunicação ao mesmo em até 20 dias, para informar data prevista para atendimento da sua solicitação.
+
+Solicitante: ${solicitante}
+Telefone: ${telefone}
+Endereço: ${endereco}
+E-mail: ${email}`;
+
+    return;
+  }
+
+  if (emailTipoSelecionado === "furtoTrafoQueimado") {
+    const ocorrencia = document.getElementById("email_ocorrencia")?.value || "";
+    const conta = document.getElementById("email_conta")?.value.trim() || "";
+    const nota = document.getElementById("email_nota")?.value.trim() || "";
+    const cidade = document.getElementById("email_cidade")?.value.trim() || "";
+
+    const tituloOcorrencia = ocorrencia === "furto"
+      ? "FURTO DE TRANSFORMADOR"
+      : "TRAFO QUEIMADO";
+
+    document.getElementById("emailTo").value =
+      "maria.santos@equatorialenergia.com.br";
+
+    document.getElementById("emailCc").value =
+      "eldem.souza@equatorialenergia.com.br; clayson.almeida@equatorialenergia.com.br; aldelino.silva@equatorialenergia.com.br; edmilson.junior@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      `${tituloOcorrencia} - CONTA CONTRATO: ${conta} - ${cidade}`.toUpperCase();
+
+    if (ocorrencia === "furto") {
+      document.getElementById("emailBody").value =
+`Bom dia,
+
+Prezados,
+
+Encaminhamos para conhecimento e devidas providências a ocorrência de furto de transformador, informada por cliente que compareceu à agência de atendimento em Santarém, conforme boletim de ocorrência apresentado e em anexo.
+
+Segue dados para análise:
+
+Conta contrato: ${conta}
+Nota: ${nota}
+Cidade: ${cidade}
+
+A supervisão da agência, Kleberton Viana, encontra-se em cópia para acompanhamento e apoio, caso necessário.`;
+    } else {
+      document.getElementById("emailBody").value =
+`Bom dia,
+
+Prezados,
+
+Encaminhamos para conhecimento e devidas providências a ocorrência de TRAFO queimado, informada por cliente que compareceu à agência de atendimento em Santarém.
+
+Segue dados para análise:
+
+Conta contrato: ${conta}
+Nota: ${nota}
+Cidade: ${cidade}
+
+A supervisão da agência, Kleberton Viana, encontra-se em cópia para acompanhamento e apoio, caso necessário.`;
+    }
+
+    return;
+  }
+
+  if (emailTipoSelecionado === "conexaoMla") {
+    const comunidade = document.getElementById("email_comunidade")?.value.trim() || "";
+    const cliente = document.getElementById("email_cliente")?.value.trim() || "";
+    const telefone = document.getElementById("email_telefone")?.value.trim() || "";
+    const email = document.getElementById("email_email")?.value.trim() || "";
+
+    document.getElementById("emailTo").value =
+      "geraldo.silva@equatorialenergia.com.br; yuri.souza@equatorialenergia.com.br; matheus.c.soares@equatorialenergia.com.br";
+
+    document.getElementById("emailCc").value =
+      "juliana.lima@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; suzane.oliveira@equatorialenergia.com.br; nayra.pinto@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; miriam.godinho@equatorialenergia.com.br; meciano.evaristo@equatorialenergia.com.br; carlindo.junior@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      `SOLICITAÇÃO DE ADESÃO – PROJETO PLPT REMOTO – ${comunidade}`.toUpperCase();
+
+    document.getElementById("emailBody").value =
+`Bom dia,
+
+Prezados,
+
+Encaminhamos, para conhecimento e análise, o ofício entregue na agência de Santarém da ${comunidade}, referente à solicitação de adesão ao Projeto PLPT Remoto, conforme documento anexo.
+
+Segue dados do solicitante:
+
+Nome: ${cliente}
+Telefone para retorno: ${telefone}
+E-mail para retorno: ${email}
+
+Permanecemos à disposição para quaisquer esclarecimentos adicionais.`;
+
+    return;
+  }
+
+  if (emailTipoSelecionado === "oficioAssociacaoMoradores") {
+    const associacao = document.getElementById("email_associacao")?.value.trim() || "";
+    const solicitante = document.getElementById("email_solicitante")?.value.trim() || "";
+    const telefone = document.getElementById("email_telefone")?.value.trim() || "";
+    const email = document.getElementById("email_email")?.value.trim() || "";
+
+    const nomeUpper = associacao.toUpperCase();
+
+    let preposicao = "DA";
+
+    if (nomeUpper.startsWith("BAIRRO")) {
+      preposicao = "DO";
+    } else if (nomeUpper.startsWith("COMUNIDADE")) {
+      preposicao = "DA";
+    }
+
+    document.getElementById("emailTo").value =
+      "aline.riker@equatorialenergia.com.br";
+
+    document.getElementById("emailCc").value =
+      "nayra.pinto@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; miriam.godinho@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; carlindo.junior@equatorialenergia.com.br; suzane.oliveira@equatorialenergia.com.br; meciano.evaristo@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      `OFICIO - ASSOCIAÇÃO DE MORADORES ${preposicao} ${associacao}`.toUpperCase();
+
+    document.getElementById("emailBody").value =
+`Bom dia,
+
+Prezados (as),
+
+Segue oficio entregue na agência de Santarém ${preposicao.toLowerCase()} ${associacao}, conforme anexo,
+
+Solicitante: ${solicitante}
+Telefone de retorno: ${telefone}
+E-mail de retorno: ${email}`;
+
+    return;
+  }
+
+  if (emailTipoSelecionado === "transferenciaTrocaTitularidadeFaturas") {
+    const motivo = document.getElementById("email_motivo")?.value.trim() || "";
+    const conta = document.getElementById("email_conta")?.value.trim() || "";
+    const instalacao = document.getElementById("email_instalacao")?.value.trim() || "";
+    const titularAtual = document.getElementById("email_titular_atual")?.value.trim() || "";
+    const parceiroAtual = document.getElementById("email_parceiro_atual")?.value.trim() || "";
+    const novoTitular = document.getElementById("email_novo_titular")?.value.trim() || "";
+    const parceiroNovo = document.getElementById("email_parceiro_novo")?.value.trim() || "";
+
+    const referencias = document.querySelectorAll(".email_fatura_referencia");
+    const valores = document.querySelectorAll(".email_fatura_valor");
+
+    let faturasTexto = "";
+
+    referencias.forEach((ref, index) => {
+      const referencia = ref.value.trim();
+      const valor = valores[index]?.value.trim() || "";
+
+      if (referencia || valor) {
+        faturasTexto += `${referencia} – ${valor}\n`;
+      }
+    });
+
+    document.getElementById("emailTo").value =
+      "kleberton.cruz@cgbengenharia.com.br";
+
+    document.getElementById("emailCc").value =
+      "tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      "EQTL PA - TRANSFERÊNCIA DE TROCA DE TITULARIDADE E FATURA - REGIONAL OESTE";
+
+    document.getElementById("emailBody").value =
+`Bom dia,
+
+Prezado Kleberton,
+
+Solicito seu apoio para solicitação de troca de titularidade com transferência de faturas, conforme dados abaixo:
+
+Motivo: ${motivo}
+
+Dados da unidade consumidora:
+Conta contrato atual: ${conta}
+Instalação: ${instalacao}
+
+Titular atual:
+Nome: ${titularAtual}
+Parceiro do atual titular: ${parceiroAtual}
+
+Novo titular:
+Nome: ${novoTitular}
+Parceiro do novo titular: ${parceiroNovo}
+
+Faturas em aberto:
+${faturasTexto}
+
+Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
+
+    return;
+  }
+
+  if (emailTipoSelecionado === "cartaAnuencia") {
+    const titular = document.getElementById("email_titular")?.value.trim() || "";
+    const documento = document.getElementById("email_documento")?.value.trim() || "";
+    const conta = document.getElementById("email_conta")?.value.trim() || "";
+
+    document.getElementById("emailTo").value =
+      "s_protesto@equatorialenergia.com.br";
+
+    document.getElementById("emailCc").value =
+      "ISRAEL.SOUSA@EQUATORIALENERGIA.COM.BR; gilliard.vaz@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      `EQTL PA - SOLICITAÇÃO DE CARTA DE ANUÊNCIA - CONTA CONTRATO: ${conta} - REGIONAL OESTE`;
+
+    document.getElementById("emailBody").value =
+`Bom dia,
+
+Prezados,
+
+Solicito a liberação da carta de anuência, tendo em vista que o débito intimado já se encontra com status PROTESTADO, bem como devidamente arrecadado no sistema SAP.
+
+Segue dados para análise:
+
+Titular: ${titular}
+Conta contrato: ${conta}
+CPF/CNPJ: ${documento}
+Distribuidora: Pará
+
+Permanecemos à disposição para quaisquer esclarecimentos adicionais.`;
+
+    return;
+  }
+
+});
+
+
+// ================= COPIAR EMAIL =================
+
+document.querySelectorAll("[data-copy-target]").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const id = btn.getAttribute("data-copy-target");
+    const campo = document.getElementById(id);
+
+    if (!campo || !campo.value.trim()) return;
+
+    await navigator.clipboard.writeText(campo.value);
+
+    btn.classList.add("copied");
+    btn.innerHTML = `<i class="fa-solid fa-check"></i> Copiado!`;
+
+    setTimeout(() => {
+      btn.classList.remove("copied");
+      btn.innerHTML = `Copiar`;
+    }, 2000);
+  });
+});
