@@ -1505,236 +1505,223 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
 
     } else if (tipo === "cadastroLogradouro") {
 
-      document.getElementById("emailDynamicFields").innerHTML = `
+  const opcoesLogradouro = `
+    <option value="">Selecione</option>
+    <option value="RUA">RUA</option>
+    <option value="TRAVESSA">TRAVESSA</option>
+    <option value="ALAMEDA">ALAMEDA</option>
+    <option value="ESTRADA">ESTRADA</option>
+    <option value="AVENIDA">AVENIDA</option>
+    <option value="RODOVIA">RODOVIA</option>
+    <option value="QUADRA">QUADRA</option>
+    <option value="RAMAL">RAMAL</option>
+    <option value="BECO">BECO</option>
+    <option value="VIELA">VIELA</option>
+    <option value="PRAÇA">PRAÇA</option>
+    <option value="ACESSO">ACESSO</option>
+  `;
+
+  document.getElementById("emailDynamicFields").innerHTML = `
+    <div id="logradouroArea">
+      <div class="logradouro-item">
+        <h3>Logradouro 1</h3>
+
         <div class="complaint-field">
           <label>Localidade</label>
-          <input id="email_localidade">
+          <input class="email_localidade_logradouro">
         </div>
 
         <div class="complaint-field">
           <label>Bairro</label>
-          <input id="email_bairro">
+          <input class="email_bairro_logradouro">
         </div>
 
         <div class="complaint-field">
           <label>Tipo de logradouro</label>
-          <select id="email_tipo">
-            <option value="">Selecione</option>
-            <option value="RUA">RUA</option>
-            <option value="TRAVESSA">TRAVESSA</option>
-            <option value="ALAMEDA">ALAMEDA</option>
-            <option value="ESTRADA">ESTRADA</option>
-            <option value="AVENIDA">AVENIDA</option>
-            <option value="RODOVIA">RODOVIA</option>
-            <option value="QUADRA">QUADRA</option>
-            <option value="RAMAL">RAMAL</option>
-            <option value="BECO">BECO</option>
-            <option value="VIELA">VIELA</option>
-            <option value="PRAÇA">PRAÇA</option>
-            <option value="ACESSO">ACESSO</option>
+          <select class="email_tipo_logradouro">
+            ${opcoesLogradouro}
           </select>
         </div>
 
         <div class="complaint-field">
           <label>Quantidade de ligações</label>
-          <input id="email_qtd">
+          <input class="email_qtd_logradouro">
         </div>
 
         <div class="complaint-field">
           <label>Nome do logradouro</label>
-          <input id="email_logradouro">
+          <input class="email_nome_logradouro">
         </div>
+      </div>
+    </div>
 
-        <div class="email-actions">
-          <button id="gerarPlanilhaLogradouro" class="copy-script-button" type="button">
-            <i class="fa-solid fa-file-excel"></i>
-            Gerar planilha de logradouro
-          </button>
-        </div>
-      `;
+    <div class="email-actions">
+      <button id="addLogradouroButton" class="copy-script-button" type="button">
+        <i class="fa-solid fa-plus"></i>
+        Adicionar outro logradouro
+      </button>
 
-      document.getElementById("generateEmailButton").disabled = true;
+      <button id="gerarPlanilhaLogradouro" class="copy-script-button" type="button">
+        <i class="fa-solid fa-file-excel"></i>
+        Gerar planilha de logradouro
+      </button>
+    </div>
+  `;
 
-      document.getElementById("gerarPlanilhaLogradouro").addEventListener("click", async () => {
-  const localidade = document.getElementById("email_localidade")?.value.trim();
-  const bairro = document.getElementById("email_bairro")?.value.trim();
-  const tipoLogradouro = document.getElementById("email_tipo")?.value.trim();
-  const qtdLigacoes = document.getElementById("email_qtd")?.value.trim();
-  const nomeLogradouro = document.getElementById("email_logradouro")?.value.trim();
+  document.getElementById("generateEmailButton").disabled = true;
 
-  if (!localidade || !bairro || !tipoLogradouro || !qtdLigacoes || !nomeLogradouro) {
-    alert("Preencha todos os campos antes de gerar a planilha.");
-    return;
-  }
+  document.getElementById("addLogradouroButton").addEventListener("click", () => {
+    const area = document.getElementById("logradouroArea");
+    const total = area.querySelectorAll(".logradouro-item").length + 1;
 
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Plan1");
+    const novo = document.createElement("div");
+    novo.className = "logradouro-item";
+    novo.innerHTML = `
+      <h3>Logradouro ${total}</h3>
 
-  // Configurações gerais
-  sheet.views = [{ showGridLines: false }];
-  sheet.pageSetup = {
-    paperSize: 9,
-    orientation: "landscape",
-    fitToPage: true,
-    fitToWidth: 1,
-    fitToHeight: 1
-  };
+      <div class="complaint-field">
+        <label>Localidade</label>
+        <input class="email_localidade_logradouro">
+      </div>
 
-  // Largura das colunas
-  sheet.getColumn("A").width = 18;
-  sheet.getColumn("B").width = 24;
-  sheet.getColumn("C").width = 16;
-  sheet.getColumn("D").width = 20;
-  sheet.getColumn("E").width = 32;
-  sheet.getColumn("F").width = 34;
+      <div class="complaint-field">
+        <label>Bairro</label>
+        <input class="email_bairro_logradouro">
+      </div>
 
-  // Altura das linhas
-  sheet.getRow(1).height = 38;
-  sheet.getRow(2).height = 38;
-  sheet.getRow(3).height = 34;
-  sheet.getRow(4).height = 20;
-  sheet.getRow(5).height = 42;
-  sheet.getRow(6).height = 24;
+      <div class="complaint-field">
+        <label>Tipo de logradouro</label>
+        <select class="email_tipo_logradouro">
+          ${opcoesLogradouro}
+        </select>
+      </div>
 
-  // Cores
-  const azulTitulo = "0070C0";
-  const azulFaixa = "5B8CC0";
-  const azulCabecalho = "00B0F0";
-  const azulEscuro = "0070C0";
-  const rosa = "E6A0A0";
-  const branco = "FFFFFF";
-  const preto = "000000";
+      <div class="complaint-field">
+        <label>Quantidade de ligações</label>
+        <input class="email_qtd_logradouro">
+      </div>
 
-  // Título superior
-sheet.mergeCells("A1:F2");
-const titulo = sheet.getCell("A1");
-titulo.value = "Gerência de Gestão Comercial\nÁrea de Leitura & Cadastro";
-titulo.font = {
-  name: "Arial",
-  bold: true,
-  size: 14,
-  color: { argb: azulTitulo }
-};
-titulo.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+      <div class="complaint-field">
+        <label>Nome do logradouro</label>
+        <input class="email_nome_logradouro">
+      </div>
+    `;
 
-for (let row = 1; row <= 2; row++) {
-  for (let col = 1; col <= 6; col++) {
-    sheet.getCell(row, col).border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" }
-    };
-  }
-}
-
-  // Faixa principal
-sheet.mergeCells("A3:F3");
-const faixa = sheet.getCell("A3");
-faixa.value = "Planilha para Solicitação de Códigos de Logradouros novos.";
-faixa.font = {
-  name: "Arial",
-  bold: true,
-  size: 12,
-  color: { argb: preto }
-};
-faixa.alignment = { horizontal: "center", vertical: "middle" };
-faixa.fill = {
-  type: "pattern",
-  pattern: "solid",
-  fgColor: { argb: azulFaixa }
-};
-
-for (let col = 1; col <= 6; col++) {
-  sheet.getCell(3, col).border = {
-    top: { style: "thin" },
-    left: { style: "thin" },
-    bottom: { style: "thin" },
-    right: { style: "thin" }
-  };
-}
-
-  // Linha azul escura
-  for (let col = 1; col <= 6; col++) {
-    const cell = sheet.getCell(4, col);
-    cell.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: azulEscuro }
-    };
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" }
-    };
-  }
-
-  // Cabeçalhos
-  const headers = [
-    "Localidade",
-    "Bairro",
-    "Tipo:R,Tv.Av,Vc,Et.QD",
-    "Qtde. de Instalações",
-    "Nome do logradouro",
-    "Observação /Complemento"
-  ];
-
-  headers.forEach((texto, index) => {
-    const cell = sheet.getCell(5, index + 1);
-    cell.value = texto;
-    cell.font = {
-  name: "Arial",
-  bold: true,
-  size: 10,
-  color: { argb: preto }
-};
-    cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
-    cell.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: index === 3 ? rosa : azulCabecalho }
-    };
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" }
-    };
+    area.appendChild(novo);
+    document.getElementById("generateEmailButton").disabled = true;
   });
 
-  // Dados preenchidos
-const estiloDados = {
-  name: "Arial Narrow",
-  size: 11,
-  bold: true,
-  color: { argb: "1F4E79" } // Azul, Ênfase 1, mais escuro 50%
-};
+  document.getElementById("gerarPlanilhaLogradouro").addEventListener("click", async () => {
+    const itens = document.querySelectorAll(".logradouro-item");
+    const logradouros = [];
 
-sheet.getCell("A6").value = localidade.toUpperCase();
-sheet.getCell("A6").font = estiloDados;
+    for (const item of itens) {
+      const localidade = item.querySelector(".email_localidade_logradouro")?.value.trim();
+      const bairro = item.querySelector(".email_bairro_logradouro")?.value.trim();
+      const tipoLogradouro = item.querySelector(".email_tipo_logradouro")?.value.trim();
+      const qtdLigacoes = item.querySelector(".email_qtd_logradouro")?.value.trim();
+      const nomeLogradouro = item.querySelector(".email_nome_logradouro")?.value.trim();
 
-sheet.getCell("B6").value = bairro.toUpperCase();
-sheet.getCell("B6").font = estiloDados;
+      if (!localidade || !bairro || !tipoLogradouro || !qtdLigacoes || !nomeLogradouro) {
+        alert("Preencha todos os campos de todos os logradouros antes de gerar a planilha.");
+        return;
+      }
 
-sheet.getCell("C6").value = tipoLogradouro.toUpperCase();
-sheet.getCell("C6").font = estiloDados;
+      logradouros.push({
+        localidade,
+        bairro,
+        tipoLogradouro,
+        qtdLigacoes,
+        nomeLogradouro
+      });
+    }
 
-sheet.getCell("D6").value = Number(qtdLigacoes);
-sheet.getCell("D6").font = estiloDados;
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Plan1");
 
-sheet.getCell("E6").value = nomeLogradouro.toUpperCase();
-sheet.getCell("E6").font = estiloDados;
+    sheet.views = [{ showGridLines: false }];
+    sheet.pageSetup = {
+      paperSize: 9,
+      orientation: "landscape",
+      fitToPage: true,
+      fitToWidth: 1,
+      fitToHeight: 1
+    };
 
-sheet.getCell("F6").value = "";
+    sheet.getColumn("A").width = 18;
+    sheet.getColumn("B").width = 24;
+    sheet.getColumn("C").width = 16;
+    sheet.getColumn("D").width = 20;
+    sheet.getColumn("E").width = 32;
+    sheet.getColumn("F").width = 34;
 
-  // Área da tabela até linha 21
-  for (let row = 6; row <= 21; row++) {
-    sheet.getRow(row).height = 22;
+    sheet.getRow(1).height = 38;
+    sheet.getRow(2).height = 38;
+    sheet.getRow(3).height = 34;
+    sheet.getRow(4).height = 20;
+    sheet.getRow(5).height = 42;
+
+    const azulTitulo = "0070C0";
+    const azulFaixa = "5B8CC0";
+    const azulCabecalho = "00B0F0";
+    const azulEscuro = "0070C0";
+    const rosa = "E6A0A0";
+    const preto = "000000";
+
+    sheet.mergeCells("A1:F2");
+    const titulo = sheet.getCell("A1");
+    titulo.value = "Gerência de Gestão Comercial\nÁrea de Leitura & Cadastro";
+    titulo.font = {
+      name: "Arial",
+      bold: true,
+      size: 14,
+      color: { argb: azulTitulo }
+    };
+    titulo.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+
+    for (let row = 1; row <= 2; row++) {
+      for (let col = 1; col <= 6; col++) {
+        sheet.getCell(row, col).border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" }
+        };
+      }
+    }
+
+    sheet.mergeCells("A3:F3");
+    const faixa = sheet.getCell("A3");
+    faixa.value = "Planilha para Solicitação de Códigos de Logradouros novos.";
+    faixa.font = {
+      name: "Arial",
+      bold: true,
+      size: 12,
+      color: { argb: preto }
+    };
+    faixa.alignment = { horizontal: "center", vertical: "middle" };
+    faixa.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: azulFaixa }
+    };
 
     for (let col = 1; col <= 6; col++) {
-      const cell = sheet.getCell(row, col);
-      cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+      sheet.getCell(3, col).border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" }
+      };
+    }
+
+    for (let col = 1; col <= 6; col++) {
+      const cell = sheet.getCell(4, col);
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: azulEscuro }
+      };
       cell.border = {
         top: { style: "thin" },
         left: { style: "thin" },
@@ -1742,35 +1729,105 @@ sheet.getCell("F6").value = "";
         right: { style: "thin" }
       };
     }
-  }
 
-  // Fonte padrão Arial nas células que ainda não receberam fonte específica
-sheet.eachRow(row => {
-  row.eachCell(cell => {
-    cell.font = {
-      ...cell.font,
-      name: cell.font?.name || "Arial"
+    const headers = [
+      "Localidade",
+      "Bairro",
+      "Tipo:R,Tv.Av,Vc,Et.QD",
+      "Qtde. de Instalações",
+      "Nome do logradouro",
+      "Observação /Complemento"
+    ];
+
+    headers.forEach((texto, index) => {
+      const cell = sheet.getCell(5, index + 1);
+      cell.value = texto;
+      cell.font = {
+        name: "Arial",
+        bold: true,
+        size: 10,
+        color: { argb: preto }
+      };
+      cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: index === 3 ? rosa : azulCabecalho }
+      };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" }
+      };
+    });
+
+    const estiloDados = {
+      name: "Arial Narrow",
+      size: 11,
+      bold: true,
+      color: { argb: "1F4E79" }
     };
+
+    logradouros.forEach((logradouro, index) => {
+      const linha = 6 + index;
+
+      sheet.getRow(linha).height = 22;
+
+      sheet.getCell(`A${linha}`).value = logradouro.localidade.toUpperCase();
+      sheet.getCell(`B${linha}`).value = logradouro.bairro.toUpperCase();
+      sheet.getCell(`C${linha}`).value = logradouro.tipoLogradouro.toUpperCase();
+      sheet.getCell(`D${linha}`).value = Number(logradouro.qtdLigacoes);
+      sheet.getCell(`E${linha}`).value = logradouro.nomeLogradouro.toUpperCase();
+      sheet.getCell(`F${linha}`).value = "";
+
+      ["A", "B", "C", "D", "E", "F"].forEach(coluna => {
+        const cell = sheet.getCell(`${coluna}${linha}`);
+        cell.font = estiloDados;
+        cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+      });
+    });
+
+    const ultimaLinha = Math.max(21, 5 + logradouros.length);
+
+    for (let row = 6; row <= ultimaLinha; row++) {
+      sheet.getRow(row).height = 22;
+
+      for (let col = 1; col <= 6; col++) {
+        const cell = sheet.getCell(row, col);
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" }
+        };
+      }
+    }
+
+    sheet.eachRow(row => {
+      row.eachCell(cell => {
+        cell.font = {
+          ...cell.font,
+          name: cell.font?.name || "Arial"
+        };
+      });
+    });
+
+    sheet.pageSetup.printArea = `A1:F${ultimaLinha}`;
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Cadastro_Logradouro_Preenchido.xlsx";
+    link.click();
+
+    document.getElementById("generateEmailButton").disabled = false;
   });
-});
-
-  // Área de impressão
-  sheet.pageSetup.printArea = "A1:F21";
-
-  // Download
-  const buffer = await workbook.xlsx.writeBuffer();
-
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  });
-
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "Cadastro_Logradouro_Preenchido.xlsx";
-  link.click();
-
-  document.getElementById("generateEmailButton").disabled = false;
-});
 
     } else if (tipo === "cartaAnuencia") {
 
@@ -1920,7 +1977,7 @@ document.getElementById("generateEmailButton").addEventListener("click", () => {
       "vanessa.maia@equatorialenergia.com.br; jerlison.tavares@equatorialenergia.com.br; jose.junior1@equatorialenergia.com.br";
 
     document.getElementById("emailCc").value =
-      "paola.moreira@equatorialenergia.com.br; lana.gomes@equatorialenergia.com.br; nayra.pinto@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; aline.riker@equatorialenergia.com.br; raiane.bentes@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+      "paola.moreira@equatorialenergia.com.br; lana.gomes@equatorialenergia.com.br; nayra.pinto@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; aline.riker@equatorialenergia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
 
     document.getElementById("emailSubject").value =
       `SOLICITAÇÃO PODA DE ÁRVORE Nº ${numero} - CONTA CONTRATO: ${conta} – ${cidade}`.toUpperCase();
@@ -1954,7 +2011,7 @@ E-mail: ${email}`;
       "maria.santos@equatorialenergia.com.br";
 
     document.getElementById("emailCc").value =
-      "eldem.souza@equatorialenergia.com.br; clayson.almeida@equatorialenergia.com.br; aldelino.silva@equatorialenergia.com.br; edmilson.junior@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+      "eldem.souza@equatorialenergia.com.br; pedro.souza@equatorialenergia.com.br; clayson.almeida@equatorialenergia.com.br; aldelino.silva@equatorialenergia.com.br; edmilson.junior@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
 
     document.getElementById("emailSubject").value =
       `${tituloOcorrencia} - CONTA CONTRATO: ${conta} - ${cidade}`.toUpperCase();
@@ -2215,6 +2272,28 @@ CPF/CNPJ: ${documento}
 Conta contrato: ${conta}
 
 Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
+
+    return;
+  }
+
+  if (emailTipoSelecionado === "cadastroLogradouro") {
+    document.getElementById("emailTo").value =
+      "laura.lima@dinamo.srv.br; vinicius.costa@dinamo.srv.br";
+
+    document.getElementById("emailCc").value =
+      "rosiane.ferreira@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      "EQTL PA - SOLICITAÇÃO DE CADASTRO DE LOGRADOURO - REGIONAL OESTE";
+
+    document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezados(as),
+
+Solicito o cadastro de logradouro no sistema SAP CRM, conforme dados informados na planilha em anexo.
+
+Permaneço à disposição para quaisquer dúvidas ou esclarecimentos.`;
 
     return;
   }
