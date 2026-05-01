@@ -1556,95 +1556,167 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
       document.getElementById("generateEmailButton").disabled = true;
 
       document.getElementById("gerarPlanilhaLogradouro").addEventListener("click", async () => {
-        const localidade = document.getElementById("email_localidade")?.value.trim();
-        const bairro = document.getElementById("email_bairro")?.value.trim();
-        const tipoLogradouro = document.getElementById("email_tipo")?.value.trim();
-        const qtdLigacoes = document.getElementById("email_qtd")?.value.trim();
-        const nomeLogradouro = document.getElementById("email_logradouro")?.value.trim();
+  const localidade = document.getElementById("email_localidade")?.value.trim();
+  const bairro = document.getElementById("email_bairro")?.value.trim();
+  const tipoLogradouro = document.getElementById("email_tipo")?.value.trim();
+  const qtdLigacoes = document.getElementById("email_qtd")?.value.trim();
+  const nomeLogradouro = document.getElementById("email_logradouro")?.value.trim();
 
-        if (!localidade || !bairro || !tipoLogradouro || !qtdLigacoes || !nomeLogradouro) {
-          alert("Preencha todos os campos antes de gerar a planilha.");
-          return;
-        }
+  if (!localidade || !bairro || !tipoLogradouro || !qtdLigacoes || !nomeLogradouro) {
+    alert("Preencha todos os campos antes de gerar a planilha.");
+    return;
+  }
 
-        try {
-          const response = await fetch("modelo-logradouro.xlsx");
-          const arrayBuffer = await response.arrayBuffer();
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("Plan1");
 
-          const workbook = new ExcelJS.Workbook();
-          await workbook.xlsx.load(arrayBuffer);
-
-          const sheet = workbook.worksheets[0];
-
-// Ajuste de layout para manter o modelo visual correto
-sheet.columns = [
-  { width: 18 }, // A - Localidade
-  { width: 24 }, // B - Bairro
-  { width: 16 }, // C - Tipo
-  { width: 20 }, // D - Qtde
-  { width: 28 }, // E - Nome do logradouro
-  { width: 34 }  // F - Observação
-];
-
-sheet.getRow(1).height = 42;
-sheet.getRow(2).height = 28;
-sheet.getRow(3).height = 32;
-sheet.getRow(4).height = 20;
-sheet.getRow(5).height = 40;
-sheet.getRow(6).height = 22;
-
-sheet.getCell("A1").alignment = {
-  horizontal: "center",
-  vertical: "middle",
-  wrapText: true
-};
-
-sheet.getCell("A3").alignment = {
-  horizontal: "center",
-  vertical: "middle",
-  wrapText: true
-};
-
-["A5", "B5", "C5", "D5", "E5", "F5"].forEach(cellRef => {
-  sheet.getCell(cellRef).alignment = {
-    horizontal: "center",
-    vertical: "middle",
-    wrapText: true
+  // Configurações gerais
+  sheet.views = [{ showGridLines: false }];
+  sheet.pageSetup = {
+    paperSize: 9,
+    orientation: "landscape",
+    fitToPage: true,
+    fitToWidth: 1,
+    fitToHeight: 1
   };
-});
 
-["A6", "B6", "C6", "D6", "E6", "F6"].forEach(cellRef => {
-  sheet.getCell(cellRef).alignment = {
-    horizontal: "center",
-    vertical: "middle",
-    wrapText: true
+  // Largura das colunas
+  sheet.getColumn("A").width = 18;
+  sheet.getColumn("B").width = 24;
+  sheet.getColumn("C").width = 16;
+  sheet.getColumn("D").width = 20;
+  sheet.getColumn("E").width = 32;
+  sheet.getColumn("F").width = 34;
+
+  // Altura das linhas
+  sheet.getRow(1).height = 38;
+  sheet.getRow(2).height = 38;
+  sheet.getRow(3).height = 34;
+  sheet.getRow(4).height = 20;
+  sheet.getRow(5).height = 42;
+  sheet.getRow(6).height = 24;
+
+  // Cores
+  const azulTitulo = "0070C0";
+  const azulFaixa = "5B8CC0";
+  const azulCabecalho = "00B0F0";
+  const azulEscuro = "0070C0";
+  const rosa = "E6A0A0";
+  const branco = "FFFFFF";
+  const preto = "000000";
+
+  // Título superior
+  sheet.mergeCells("A1:F2");
+  const titulo = sheet.getCell("A1");
+  titulo.value = "Gerência de Gestão Comercial\nÁrea de Leitura & Cadastro";
+  titulo.font = { bold: true, size: 14, color: { argb: azulTitulo } };
+  titulo.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+
+  // Faixa principal
+  sheet.mergeCells("A3:F3");
+  const faixa = sheet.getCell("A3");
+  faixa.value = "Planilha para Solicitação de Códigos de Logradouros novos.";
+  faixa.font = { bold: true, size: 12, color: { argb: preto } };
+  faixa.alignment = { horizontal: "center", vertical: "middle" };
+  faixa.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: azulFaixa }
   };
+
+  // Linha azul escura
+  for (let col = 1; col <= 6; col++) {
+    const cell = sheet.getCell(4, col);
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: azulEscuro }
+    };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" }
+    };
+  }
+
+  // Cabeçalhos
+  const headers = [
+    "Localidade",
+    "Bairro",
+    "Tipo:R,Tv.Av,Vc,Et.QD",
+    "Qtde. de Instalações",
+    "Nome do logradouro",
+    "Observação /Complemento"
+  ];
+
+  headers.forEach((texto, index) => {
+    const cell = sheet.getCell(5, index + 1);
+    cell.value = texto;
+    cell.font = { bold: true, size: 10, color: { argb: preto } };
+    cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: index === 3 ? rosa : azulCabecalho }
+    };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" }
+    };
+  });
+
+  // Dados preenchidos
+  sheet.getCell("A6").value = localidade.toUpperCase();
+  sheet.getCell("B6").value = bairro.toUpperCase();
+  sheet.getCell("C6").value = tipoLogradouro.toUpperCase();
+  sheet.getCell("D6").value = Number(qtdLigacoes);
+  sheet.getCell("E6").value = nomeLogradouro.toUpperCase();
+  sheet.getCell("F6").value = "";
+
+  // Área da tabela até linha 21
+  for (let row = 6; row <= 21; row++) {
+    sheet.getRow(row).height = 22;
+
+    for (let col = 1; col <= 6; col++) {
+      const cell = sheet.getCell(row, col);
+      cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" }
+      };
+    }
+  }
+
+  // Fonte padrão
+  sheet.eachRow(row => {
+    row.eachCell(cell => {
+      cell.font = cell.font || {};
+      cell.font.name = "Calibri";
+    });
+  });
+
+  // Área de impressão
+  sheet.pageSetup.printArea = "A1:F21";
+
+  // Download
+  const buffer = await workbook.xlsx.writeBuffer();
+
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "Cadastro_Logradouro_Preenchido.xlsx";
+  link.click();
+
+  document.getElementById("generateEmailButton").disabled = false;
 });
-
-          sheet.getCell("A6").value = localidade;
-          sheet.getCell("B6").value = bairro;
-          sheet.getCell("C6").value = tipoLogradouro;
-          sheet.getCell("D6").value = Number(qtdLigacoes);
-          sheet.getCell("E6").value = nomeLogradouro;
-
-          const buffer = await workbook.xlsx.writeBuffer();
-
-          const blob = new Blob([buffer], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          });
-
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(blob);
-          link.download = "Cadastro_Logradouro_Preenchido.xlsx";
-          link.click();
-
-          document.getElementById("generateEmailButton").disabled = false;
-
-        } catch (error) {
-          console.error(error);
-          alert("Erro ao carregar o modelo de planilha.");
-        }
-      });
 
     } else if (tipo === "cartaAnuencia") {
 
