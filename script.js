@@ -1,3 +1,16 @@
+// ================= FUNÇÕES GLOBAIS =================
+function saudacaoHorario() {
+  const hora = new Date().getHours();
+
+  if (hora < 12) {
+    return "Bom dia,";
+  } else if (hora < 18) {
+    return "Boa tarde,";
+  } else {
+    return "Boa noite,";
+  }
+}
+
 // ================= USUÁRIOS =================
 const usuarios = [
   {
@@ -1223,6 +1236,86 @@ document.querySelectorAll("#emailTypesList .script-item").forEach(btn => {
 
       document.getElementById("generateEmailButton").disabled = false;
 
+    } else if (tipo === "estornoTrocaTitularidadeFaturas") {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Motivo do estorno da troca de titularidade</label>
+          <textarea id="email_motivo"></textarea>
+        </div>
+
+        <div class="complaint-field">
+          <label>Conta contrato atual</label>
+          <input id="email_conta" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Instalação</label>
+          <input id="email_instalacao" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Titular atual</label>
+          <input id="email_titular_atual" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Parceiro do atual titular</label>
+          <input id="email_parceiro_atual" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Titular anterior</label>
+          <input id="email_titular_anterior" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Parceiro do titular anterior</label>
+          <input id="email_parceiro_anterior" autocomplete="off">
+        </div>
+
+        <div id="emailFaturasEstornoArea">
+          <div class="complaint-field">
+            <label>Referência da fatura</label>
+            <input class="email_fatura_estorno_referencia" autocomplete="off" placeholder="Ex: 03/2026">
+          </div>
+
+          <div class="complaint-field">
+            <label>Valor da fatura</label>
+            <input class="email_fatura_estorno_valor" autocomplete="off" placeholder="Ex: R$ 796,64">
+          </div>
+        </div>
+
+        <div class="email-actions">
+          <button id="addFaturaEstornoButton" class="copy-script-button" type="button">
+            <i class="fa-solid fa-plus"></i>
+            Adicionar fatura
+          </button>
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = false;
+
+      document.getElementById("addFaturaEstornoButton").addEventListener("click", () => {
+        const area = document.getElementById("emailFaturasEstornoArea");
+
+        const linha = document.createElement("div");
+        linha.className = "email-fatura-row";
+        linha.innerHTML = `
+          <div class="complaint-field">
+            <label>Referência da fatura</label>
+            <input class="email_fatura_estorno_referencia" autocomplete="off" placeholder="Ex: 04/2026">
+          </div>
+
+          <div class="complaint-field">
+            <label>Valor da fatura</label>
+            <input class="email_fatura_estorno_valor" autocomplete="off" placeholder="Ex: R$ 1.645,46">
+          </div>
+        `;
+
+        area.appendChild(linha);
+      });
+
     } else if (tipo === "transferenciaTrocaTitularidadeFaturas") {
 
       document.getElementById("emailDynamicFields").innerHTML = `
@@ -1302,6 +1395,194 @@ document.querySelectorAll("#emailTypesList .script-item").forEach(btn => {
 
         area.appendChild(linha);
       });
+
+    } else if (tipo === "retiradaNegativacao") {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Cliente apresentou evidência do APP/SITE do Serasa que mostra que está negativado?</label>
+          <select id="email_evidencia_serasa">
+            <option value="">Selecione</option>
+            <option value="sim">SIM</option>
+            <option value="nao">NÃO</option>
+          </select>
+        </div>
+
+        <div id="emailRetiradaNegativacaoArea"></div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = true;
+
+      document.getElementById("email_evidencia_serasa").addEventListener("change", () => {
+        const evidencia = document.getElementById("email_evidencia_serasa").value;
+        const area = document.getElementById("emailRetiradaNegativacaoArea");
+
+        document.getElementById("emailTo").value = "";
+        document.getElementById("emailCc").value = "";
+        document.getElementById("emailSubject").value = "";
+        document.getElementById("emailBody").value = "";
+        document.getElementById("generateEmailButton").disabled = true;
+
+        if (evidencia === "nao") {
+          area.innerHTML = `
+            <div class="complaint-empty-state aviso-carta">
+              <i class="fa-solid fa-circle-info"></i>
+              <strong>Atenção</strong>
+              <span>
+Prezado colaborador,
+
+Para continuidade da solicitação e maior assertividade na tratativa, é obrigatório que o cliente apresente evidência de que seu CPF encontra-se negativado, por meio de print ou foto obtidos diretamente no aplicativo ou site da Serasa.
+
+Observação: Não serão aceitas imagens provenientes de instituições bancárias ou estabelecimentos comerciais (como Magazine Luiza, Americanas, entre outros), uma vez que utilizam sistemas distintos e podem não refletir a situação atualizada. As evidências devem, obrigatoriamente, ser emitidas pela Serasa.
+              </span>
+            </div>
+          `;
+        }
+
+        if (evidencia === "sim") {
+          area.innerHTML = `
+            <div class="complaint-field">
+              <label>O débito da fatura já se encontra arrecadado no sistema SAP?</label>
+              <select id="email_debito_arrecadado_negativacao">
+                <option value="">Selecione</option>
+                <option value="sim">SIM</option>
+                <option value="nao">NÃO</option>
+              </select>
+            </div>
+
+            <div id="emailRetiradaNegativacaoDados"></div>
+          `;
+
+          document.getElementById("email_debito_arrecadado_negativacao").addEventListener("change", () => {
+            const arrecadado = document.getElementById("email_debito_arrecadado_negativacao").value;
+            const dados = document.getElementById("emailRetiradaNegativacaoDados");
+
+            document.getElementById("emailTo").value = "";
+            document.getElementById("emailCc").value = "";
+            document.getElementById("emailSubject").value = "";
+            document.getElementById("emailBody").value = "";
+            document.getElementById("generateEmailButton").disabled = true;
+
+            if (arrecadado === "nao") {
+              dados.innerHTML = `
+                <div class="complaint-empty-state aviso-carta">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <strong>Atenção</strong>
+                  <span>
+Prezado colaborador,
+
+Considerando que o referido débito ainda não se encontra atualizado no sistema da Equatorial (SAP CRM), orientamos aguardar a efetivação da arrecadação, a qual ocorre de forma automática.
+
+Ressaltamos que somente após a devida atualização no sistema será realizada a retirada de negativação automática, também no prazo interno de 5 dias.
+                  </span>
+                </div>
+              `;
+            }
+
+            if (arrecadado === "sim") {
+              dados.innerHTML = `
+                <div class="complaint-field">
+                  <label>Nome</label>
+                  <input id="email_nome" autocomplete="off">
+                </div>
+
+                <div class="complaint-field">
+                  <label>CPF/CNPJ</label>
+                  <input id="email_documento" autocomplete="off">
+                </div>
+
+                <div class="complaint-field">
+                  <label>Conta contrato</label>
+                  <input id="email_conta" autocomplete="off">
+                </div>
+              `;
+
+              document.getElementById("generateEmailButton").disabled = false;
+            }
+          });
+        }
+      });
+
+} else if (tipo === "cadastroLogradouro") {
+
+  document.getElementById("emailDynamicFields").innerHTML = `
+    <div class="complaint-field">
+      <label>Localidade</label>
+      <input id="email_localidade">
+    </div>
+
+    <div class="complaint-field">
+      <label>Bairro</label>
+      <input id="email_bairro">
+    </div>
+
+    <div class="complaint-field">
+      <label>Tipo de logradouro</label>
+<select id="email_tipo">
+  <option value="">Selecione</option>
+  <option value="RUA">RUA</option>
+  <option value="TRAVESSA">TRAVESSA</option>
+  <option value="ALAMEDA">ALAMEDA</option>
+  <option value="ESTRADA">ESTRADA</option>
+  <option value="AVENIDA">AVENIDA</option>
+  <option value="RODOVIA">RODOVIA</option>
+  <option value="QUADRA">QUADRA</option>
+  <option value="RAMAL">RAMAL</option>
+  <option value="BECO">BECO</option>
+  <option value="VIELA">VIELA</option>
+  <option value="PRAÇA">PRAÇA</option>
+  <option value="ACESSO">ACESSO</option>
+</select>
+    </div>
+
+    <div class="complaint-field">
+      <label>Quantidade de ligações</label>
+      <input id="email_qtd">
+    </div>
+
+    <div class="complaint-field">
+      <label>Nome do logradouro</label>
+      <input id="email_logradouro">
+    </div>
+
+    <div class="email-actions">
+      <button id="gerarPlanilhaLogradouro" class="copy-script-button" type="button">
+        <i class="fa-solid fa-file-excel"></i>
+        Gerar planilha de logradouro
+      </button>
+    </div>
+  `;
+
+  document.getElementById("generateEmailButton").disabled = true;
+  document.getElementById("gerarPlanilhaLogradouro").addEventListener("click", async () => {
+
+    const localidade = document.getElementById("email_localidade")?.value.trim();
+    const bairro = document.getElementById("email_bairro")?.value.trim();
+    const tipoLogradouro = document.getElementById("email_tipo")?.value.trim();
+    const qtdLigacoes = document.getElementById("email_qtd")?.value.trim();
+    const nomeLogradouro = document.getElementById("email_logradouro")?.value.trim();
+
+    if (!localidade || !bairro || !tipoLogradouro || !qtdLigacoes || !nomeLogradouro) {
+      alert("Preencha todos os campos antes de gerar a planilha.");
+      return;
+    }
+
+    const response = await fetch("modelo-logradouro.xlsx");
+    const arrayBuffer = await response.arrayBuffer();
+
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+    sheet["A6"] = { t: "s", v: localidade };
+    sheet["B6"] = { t: "s", v: bairro };
+    sheet["C6"] = { t: "s", v: tipoLogradouro };
+    sheet["D6"] = { t: "s", v: qtdLigacoes };
+    sheet["E6"] = { t: "s", v: nomeLogradouro };
+
+    XLSX.writeFile(workbook, "Cadastro_Logradouro_Preenchido.xlsx");
+
+    document.getElementById("generateEmailButton").disabled = false;
+  });
 
     } else if (tipo === "cartaAnuencia") {
 
@@ -1457,7 +1738,7 @@ document.getElementById("generateEmailButton").addEventListener("click", () => {
       `SOLICITAÇÃO PODA DE ÁRVORE Nº ${numero} - CONTA CONTRATO: ${conta} – ${cidade}`.toUpperCase();
 
     document.getElementById("emailBody").value =
-`Boa tarde,
+`${saudacaoHorario()}
 
 Prezados,
 
@@ -1492,7 +1773,7 @@ E-mail: ${email}`;
 
     if (ocorrencia === "furto") {
       document.getElementById("emailBody").value =
-`Bom dia,
+`${saudacaoHorario()}
 
 Prezados,
 
@@ -1507,7 +1788,7 @@ Cidade: ${cidade}
 A supervisão da agência, Kleberton Viana, encontra-se em cópia para acompanhamento e apoio, caso necessário.`;
     } else {
       document.getElementById("emailBody").value =
-`Bom dia,
+`${saudacaoHorario()}
 
 Prezados,
 
@@ -1541,7 +1822,7 @@ A supervisão da agência, Kleberton Viana, encontra-se em cópia para acompanha
       `SOLICITAÇÃO DE ADESÃO – PROJETO PLPT REMOTO – ${comunidade}`.toUpperCase();
 
     document.getElementById("emailBody").value =
-`Bom dia,
+`${saudacaoHorario()}
 
 Prezados,
 
@@ -1584,7 +1865,7 @@ Permanecemos à disposição para quaisquer esclarecimentos adicionais.`;
       `OFICIO - ASSOCIAÇÃO DE MORADORES ${preposicao} ${associacao}`.toUpperCase();
 
     document.getElementById("emailBody").value =
-`Bom dia,
+`${saudacaoHorario()}
 
 Prezados (as),
 
@@ -1593,6 +1874,67 @@ Segue oficio entregue na agência de Santarém ${preposicao.toLowerCase()} ${ass
 Solicitante: ${solicitante}
 Telefone de retorno: ${telefone}
 E-mail de retorno: ${email}`;
+
+    return;
+  }
+
+  if (emailTipoSelecionado === "estornoTrocaTitularidadeFaturas") {
+    const motivo = document.getElementById("email_motivo")?.value.trim() || "";
+    const conta = document.getElementById("email_conta")?.value.trim() || "";
+    const instalacao = document.getElementById("email_instalacao")?.value.trim() || "";
+    const titularAtual = document.getElementById("email_titular_atual")?.value.trim() || "";
+    const parceiroAtual = document.getElementById("email_parceiro_atual")?.value.trim() || "";
+    const titularAnterior = document.getElementById("email_titular_anterior")?.value.trim() || "";
+    const parceiroAnterior = document.getElementById("email_parceiro_anterior")?.value.trim() || "";
+
+    const referencias = document.querySelectorAll(".email_fatura_estorno_referencia");
+    const valores = document.querySelectorAll(".email_fatura_estorno_valor");
+
+    let faturasTexto = "";
+
+    referencias.forEach((ref, index) => {
+      const referencia = ref.value.trim();
+      const valor = valores[index]?.value.trim() || "";
+
+      if (referencia || valor) {
+        faturasTexto += `${referencia} – ${valor}\n`;
+      }
+    });
+
+    document.getElementById("emailTo").value =
+      "kleberton.cruz@cgbengenharia.com.br";
+
+    document.getElementById("emailCc").value =
+      "tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      "EQTL PA - ESTORNO DE TROCA DE TITULARIDADE COM FATURA - REGIONAL OESTE";
+
+    document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezado Kleberton,
+
+Solicito seu apoio para solicitação de estorno de troca de titularidade com faturas, conforme dados abaixo:
+
+Motivo: ${motivo}
+
+Dados da unidade consumidora:
+Conta contrato atual: ${conta}
+Instalação: ${instalacao}
+
+Titular atual:
+Nome: ${titularAtual}
+Parceiro do atual titular: ${parceiroAtual}
+
+Titular anterior:
+Nome: ${titularAnterior}
+Parceiro do titular anterior: ${parceiroAnterior}
+
+Faturas em aberto:
+${faturasTexto}
+
+Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
 
     return;
   }
@@ -1630,7 +1972,7 @@ E-mail de retorno: ${email}`;
       "EQTL PA - TRANSFERÊNCIA DE TROCA DE TITULARIDADE E FATURA - REGIONAL OESTE";
 
     document.getElementById("emailBody").value =
-`Bom dia,
+`${saudacaoHorario()}
 
 Prezado Kleberton,
 
@@ -1658,6 +2000,37 @@ Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
     return;
   }
 
+  if (emailTipoSelecionado === "retiradaNegativacao") {
+    const nome = document.getElementById("email_nome")?.value.trim() || "";
+    const documento = document.getElementById("email_documento")?.value.trim() || "";
+    const conta = document.getElementById("email_conta")?.value.trim() || "";
+
+    document.getElementById("emailTo").value =
+      "claudianna.gomes@equatorialenergia.com.br";
+
+    document.getElementById("emailCc").value =
+      "tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br";
+
+    document.getElementById("emailSubject").value =
+      `SOLICITAÇÃO DE RETIRADA DE NEGATIVAÇÃO - CPF: ${documento} - CONTA CONTRATO: ${conta}`;
+
+    document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezada Claudiana,
+
+Solicito seu apoio na análise e retirada de negativação, conforme dados abaixo.
+Ressalto que o cliente apresentou evidência de negativação junto à Serasa, conforme documento anexo.
+
+Nome: ${nome}
+CPF/CNPJ: ${documento}
+Conta contrato: ${conta}
+
+Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
+
+    return;
+  }
+
   if (emailTipoSelecionado === "cartaAnuencia") {
     const titular = document.getElementById("email_titular")?.value.trim() || "";
     const documento = document.getElementById("email_documento")?.value.trim() || "";
@@ -1673,7 +2046,7 @@ Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
       `EQTL PA - SOLICITAÇÃO DE CARTA DE ANUÊNCIA - CONTA CONTRATO: ${conta} - REGIONAL OESTE`;
 
     document.getElementById("emailBody").value =
-`Bom dia,
+`${saudacaoHorario()}
 
 Prezados,
 

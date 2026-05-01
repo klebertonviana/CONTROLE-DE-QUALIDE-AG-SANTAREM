@@ -449,10 +449,16 @@
         <button class="script-item" type="button"><strong>OFÍCIO DE PODER PÚBLICO</strong><span>Procon, Ministério Público, Polícia Civil, Polícia Militar, Bombeiro e Defensoria Pública</span></button>
         <button class="script-item" type="button"><strong>RECEBIMENTO DOCUMENTO JUDICIAL</strong><span>Citação, Intimação e Liminar</span></button>
         <button class="script-item" type="button"><strong>DOCUMENTO JUDICIAL DESCUMPRIMENTO</strong><span>Sentença ou Liminar</span></button>
-        <button class="script-item" type="button"><strong>RETIRADA DE NEGATIVAÇÃO</strong><span>Apoio comercial</span></button>
-        <button class="script-item" type="button"><strong>CADASTRO DO CLIENTE MLA NO SISTEMA SAP APÓS LIGAÇÃO</strong><span>Apoio cadastral</span></button>
+        <button class="script-item" type="button" data-type="retiradaNegativacao">
+        <strong>RETIRADA DE NEGATIVAÇÃO</strong>
+        <span>Apoio comercial</span>
+      </button>
+
         <button class="script-item" type="button"><strong>CADASTRO DE MEDIDOR</strong><span>Apoio cadastral</span></button>
-        <button class="script-item" type="button"><strong>ESTORNO DE TROCA DE TITULARIDADE COM FATURA(S)</strong><span>Apoio comercial</span></button>
+        <button class="script-item" type="button" data-type="estornoTrocaTitularidadeFaturas">
+         <strong>ESTORNO DE TROCA DE TITULARIDADE COM FATURA(S)      </strong>
+         <span>Apoio comercial</span>
+       </button>
 
         <button class="script-item" type="button" data-type="transferenciaTrocaTitularidadeFaturas">
   <strong>TRANSFERÊNCIA DE TROCA DE TITULARIDADE COM FATURA(S)</strong>
@@ -461,7 +467,10 @@
 
         <button class="script-item" type="button"><strong>CANCELAR DESLIGAMENTO - APÓS NOTA DE TROCA PROCEDENTE</strong><span>Apoio operacional</span></button>
         <button class="script-item" type="button"><strong>PROCESSAR TROCA DE TITULARIDADE - APÓS NOTA PROCEDENTE</strong><span>Apoio comercial</span></button>
-        <button class="script-item" type="button"><strong>CADASTRO DE LOGRADOURO SISTEMA SAP</strong><span>Apoio cadastral</span></button>
+        <button class="script-item" type="button" data-type="cadastroLogradouro">
+         <strong>CADASTRO DE LOGRADOURO SISTEMA SAP</strong>
+         <span>Apoio cadastral</span>
+       </button>
         <button class="script-item" type="button"><strong>E-MAIL PARA SUPERVISÃO - OUTROS NÃO ENQUADRADOS ANTERIORMENTE</strong><span>Apoio gerencial</span></button>
       </div>
     </div>
@@ -709,6 +718,7 @@
 
   </section>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
