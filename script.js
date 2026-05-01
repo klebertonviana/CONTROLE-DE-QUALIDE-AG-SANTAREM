@@ -1606,23 +1606,53 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
   const preto = "000000";
 
   // Título superior
-  sheet.mergeCells("A1:F2");
-  const titulo = sheet.getCell("A1");
-  titulo.value = "Gerência de Gestão Comercial\nÁrea de Leitura & Cadastro";
-  titulo.font = { bold: true, size: 14, color: { argb: azulTitulo } };
-  titulo.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+sheet.mergeCells("A1:F2");
+const titulo = sheet.getCell("A1");
+titulo.value = "Gerência de Gestão Comercial\nÁrea de Leitura & Cadastro";
+titulo.font = {
+  name: "Arial",
+  bold: true,
+  size: 14,
+  color: { argb: azulTitulo }
+};
+titulo.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+
+for (let row = 1; row <= 2; row++) {
+  for (let col = 1; col <= 6; col++) {
+    sheet.getCell(row, col).border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" }
+    };
+  }
+}
 
   // Faixa principal
-  sheet.mergeCells("A3:F3");
-  const faixa = sheet.getCell("A3");
-  faixa.value = "Planilha para Solicitação de Códigos de Logradouros novos.";
-  faixa.font = { bold: true, size: 12, color: { argb: preto } };
-  faixa.alignment = { horizontal: "center", vertical: "middle" };
-  faixa.fill = {
-    type: "pattern",
-    pattern: "solid",
-    fgColor: { argb: azulFaixa }
+sheet.mergeCells("A3:F3");
+const faixa = sheet.getCell("A3");
+faixa.value = "Planilha para Solicitação de Códigos de Logradouros novos.";
+faixa.font = {
+  name: "Arial",
+  bold: true,
+  size: 12,
+  color: { argb: preto }
+};
+faixa.alignment = { horizontal: "center", vertical: "middle" };
+faixa.fill = {
+  type: "pattern",
+  pattern: "solid",
+  fgColor: { argb: azulFaixa }
+};
+
+for (let col = 1; col <= 6; col++) {
+  sheet.getCell(3, col).border = {
+    top: { style: "thin" },
+    left: { style: "thin" },
+    bottom: { style: "thin" },
+    right: { style: "thin" }
   };
+}
 
   // Linha azul escura
   for (let col = 1; col <= 6; col++) {
@@ -1653,7 +1683,12 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
   headers.forEach((texto, index) => {
     const cell = sheet.getCell(5, index + 1);
     cell.value = texto;
-    cell.font = { bold: true, size: 10, color: { argb: preto } };
+    cell.font = {
+  name: "Arial",
+  bold: true,
+  size: 10,
+  color: { argb: preto }
+};
     cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
     cell.fill = {
       type: "pattern",
@@ -1669,12 +1704,29 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
   });
 
   // Dados preenchidos
-  sheet.getCell("A6").value = localidade.toUpperCase();
-  sheet.getCell("B6").value = bairro.toUpperCase();
-  sheet.getCell("C6").value = tipoLogradouro.toUpperCase();
-  sheet.getCell("D6").value = Number(qtdLigacoes);
-  sheet.getCell("E6").value = nomeLogradouro.toUpperCase();
-  sheet.getCell("F6").value = "";
+const estiloDados = {
+  name: "Arial Narrow",
+  size: 11,
+  bold: true,
+  color: { argb: "1F4E79" } // Azul, Ênfase 1, mais escuro 50%
+};
+
+sheet.getCell("A6").value = localidade.toUpperCase();
+sheet.getCell("A6").font = estiloDados;
+
+sheet.getCell("B6").value = bairro.toUpperCase();
+sheet.getCell("B6").font = estiloDados;
+
+sheet.getCell("C6").value = tipoLogradouro.toUpperCase();
+sheet.getCell("C6").font = estiloDados;
+
+sheet.getCell("D6").value = Number(qtdLigacoes);
+sheet.getCell("D6").font = estiloDados;
+
+sheet.getCell("E6").value = nomeLogradouro.toUpperCase();
+sheet.getCell("E6").font = estiloDados;
+
+sheet.getCell("F6").value = "";
 
   // Área da tabela até linha 21
   for (let row = 6; row <= 21; row++) {
@@ -1692,13 +1744,15 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
     }
   }
 
-  // Fonte padrão
-  sheet.eachRow(row => {
-    row.eachCell(cell => {
-      cell.font = cell.font || {};
-      cell.font.name = "Calibri";
-    });
+  // Fonte padrão Arial nas células que ainda não receberam fonte específica
+sheet.eachRow(row => {
+  row.eachCell(cell => {
+    cell.font = {
+      ...cell.font,
+      name: cell.font?.name || "Arial"
+    };
   });
+});
 
   // Área de impressão
   sheet.pageSetup.printArea = "A1:F21";
