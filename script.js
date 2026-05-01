@@ -1503,86 +1503,103 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
         }
       });
 
-} else if (tipo === "cadastroLogradouro") {
+    } else if (tipo === "cadastroLogradouro") {
 
-  document.getElementById("emailDynamicFields").innerHTML = `
-    <div class="complaint-field">
-      <label>Localidade</label>
-      <input id="email_localidade">
-    </div>
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Localidade</label>
+          <input id="email_localidade">
+        </div>
 
-    <div class="complaint-field">
-      <label>Bairro</label>
-      <input id="email_bairro">
-    </div>
+        <div class="complaint-field">
+          <label>Bairro</label>
+          <input id="email_bairro">
+        </div>
 
-    <div class="complaint-field">
-      <label>Tipo de logradouro</label>
-<select id="email_tipo">
-  <option value="">Selecione</option>
-  <option value="RUA">RUA</option>
-  <option value="TRAVESSA">TRAVESSA</option>
-  <option value="ALAMEDA">ALAMEDA</option>
-  <option value="ESTRADA">ESTRADA</option>
-  <option value="AVENIDA">AVENIDA</option>
-  <option value="RODOVIA">RODOVIA</option>
-  <option value="QUADRA">QUADRA</option>
-  <option value="RAMAL">RAMAL</option>
-  <option value="BECO">BECO</option>
-  <option value="VIELA">VIELA</option>
-  <option value="PRAÇA">PRAÇA</option>
-  <option value="ACESSO">ACESSO</option>
-</select>
-    </div>
+        <div class="complaint-field">
+          <label>Tipo de logradouro</label>
+          <select id="email_tipo">
+            <option value="">Selecione</option>
+            <option value="RUA">RUA</option>
+            <option value="TRAVESSA">TRAVESSA</option>
+            <option value="ALAMEDA">ALAMEDA</option>
+            <option value="ESTRADA">ESTRADA</option>
+            <option value="AVENIDA">AVENIDA</option>
+            <option value="RODOVIA">RODOVIA</option>
+            <option value="QUADRA">QUADRA</option>
+            <option value="RAMAL">RAMAL</option>
+            <option value="BECO">BECO</option>
+            <option value="VIELA">VIELA</option>
+            <option value="PRAÇA">PRAÇA</option>
+            <option value="ACESSO">ACESSO</option>
+          </select>
+        </div>
 
-    <div class="complaint-field">
-      <label>Quantidade de ligações</label>
-      <input id="email_qtd">
-    </div>
+        <div class="complaint-field">
+          <label>Quantidade de ligações</label>
+          <input id="email_qtd">
+        </div>
 
-    <div class="complaint-field">
-      <label>Nome do logradouro</label>
-      <input id="email_logradouro">
-    </div>
+        <div class="complaint-field">
+          <label>Nome do logradouro</label>
+          <input id="email_logradouro">
+        </div>
 
-    <div class="email-actions">
-      <button id="gerarPlanilhaLogradouro" class="copy-script-button" type="button">
-        <i class="fa-solid fa-file-excel"></i>
-        Gerar planilha de logradouro
-      </button>
-    </div>
-  `;
+        <div class="email-actions">
+          <button id="gerarPlanilhaLogradouro" class="copy-script-button" type="button">
+            <i class="fa-solid fa-file-excel"></i>
+            Gerar planilha de logradouro
+          </button>
+        </div>
+      `;
 
-  document.getElementById("generateEmailButton").disabled = true;
-  document.getElementById("gerarPlanilhaLogradouro").addEventListener("click", async () => {
+      document.getElementById("generateEmailButton").disabled = true;
 
-    const localidade = document.getElementById("email_localidade")?.value.trim();
-    const bairro = document.getElementById("email_bairro")?.value.trim();
-    const tipoLogradouro = document.getElementById("email_tipo")?.value.trim();
-    const qtdLigacoes = document.getElementById("email_qtd")?.value.trim();
-    const nomeLogradouro = document.getElementById("email_logradouro")?.value.trim();
+      document.getElementById("gerarPlanilhaLogradouro").addEventListener("click", async () => {
+        const localidade = document.getElementById("email_localidade")?.value.trim();
+        const bairro = document.getElementById("email_bairro")?.value.trim();
+        const tipoLogradouro = document.getElementById("email_tipo")?.value.trim();
+        const qtdLigacoes = document.getElementById("email_qtd")?.value.trim();
+        const nomeLogradouro = document.getElementById("email_logradouro")?.value.trim();
 
-    if (!localidade || !bairro || !tipoLogradouro || !qtdLigacoes || !nomeLogradouro) {
-      alert("Preencha todos os campos antes de gerar a planilha.");
-      return;
-    }
+        if (!localidade || !bairro || !tipoLogradouro || !qtdLigacoes || !nomeLogradouro) {
+          alert("Preencha todos os campos antes de gerar a planilha.");
+          return;
+        }
 
-    const response = await fetch("modelo-logradouro.xlsx");
-    const arrayBuffer = await response.arrayBuffer();
+        try {
+          const response = await fetch("modelo-logradouro.xlsx");
+          const arrayBuffer = await response.arrayBuffer();
 
-    const workbook = XLSX.read(arrayBuffer, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const workbook = new ExcelJS.Workbook();
+          await workbook.xlsx.load(arrayBuffer);
 
-    sheet["A6"] = { t: "s", v: localidade };
-    sheet["B6"] = { t: "s", v: bairro };
-    sheet["C6"] = { t: "s", v: tipoLogradouro };
-    sheet["D6"] = { t: "s", v: qtdLigacoes };
-    sheet["E6"] = { t: "s", v: nomeLogradouro };
+          const sheet = workbook.worksheets[0];
 
-    XLSX.writeFile(workbook, "Cadastro_Logradouro_Preenchido.xlsx");
+          sheet.getCell("A6").value = localidade;
+          sheet.getCell("B6").value = bairro;
+          sheet.getCell("C6").value = tipoLogradouro;
+          sheet.getCell("D6").value = Number(qtdLigacoes);
+          sheet.getCell("E6").value = nomeLogradouro;
 
-    document.getElementById("generateEmailButton").disabled = false;
-  });
+          const buffer = await workbook.xlsx.writeBuffer();
+
+          const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          });
+
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "Cadastro_Logradouro_Preenchido.xlsx";
+          link.click();
+
+          document.getElementById("generateEmailButton").disabled = false;
+
+        } catch (error) {
+          console.error(error);
+          alert("Erro ao carregar o modelo de planilha.");
+        }
+      });
 
     } else if (tipo === "cartaAnuencia") {
 
