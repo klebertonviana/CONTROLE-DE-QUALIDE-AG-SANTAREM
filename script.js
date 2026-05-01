@@ -1576,6 +1576,51 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
 
           const sheet = workbook.worksheets[0];
 
+// Ajuste de layout para manter o modelo visual correto
+sheet.columns = [
+  { width: 18 }, // A - Localidade
+  { width: 24 }, // B - Bairro
+  { width: 16 }, // C - Tipo
+  { width: 20 }, // D - Qtde
+  { width: 28 }, // E - Nome do logradouro
+  { width: 34 }  // F - Observação
+];
+
+sheet.getRow(1).height = 42;
+sheet.getRow(2).height = 28;
+sheet.getRow(3).height = 32;
+sheet.getRow(4).height = 20;
+sheet.getRow(5).height = 40;
+sheet.getRow(6).height = 22;
+
+sheet.getCell("A1").alignment = {
+  horizontal: "center",
+  vertical: "middle",
+  wrapText: true
+};
+
+sheet.getCell("A3").alignment = {
+  horizontal: "center",
+  vertical: "middle",
+  wrapText: true
+};
+
+["A5", "B5", "C5", "D5", "E5", "F5"].forEach(cellRef => {
+  sheet.getCell(cellRef).alignment = {
+    horizontal: "center",
+    vertical: "middle",
+    wrapText: true
+  };
+});
+
+["A6", "B6", "C6", "D6", "E6", "F6"].forEach(cellRef => {
+  sheet.getCell(cellRef).alignment = {
+    horizontal: "center",
+    vertical: "middle",
+    wrapText: true
+  };
+});
+
           sheet.getCell("A6").value = localidade;
           sheet.getCell("B6").value = bairro;
           sheet.getCell("C6").value = tipoLogradouro;
