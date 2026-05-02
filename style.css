@@ -1550,3 +1550,29 @@ button,
   color: #1f2933;
   white-space: pre-line;
 }
+
+/* BOTÃO ADICIONAR CAMPO - PADRÃO SISTEMA */
+.add-field-btn {
+  margin-top: 10px;
+  background: transparent;
+  border: 1px dashed rgba(134, 22, 48, 0.45);
+  color: var(--primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+.add-field-btn i {
+  font-size: 12px;
+}
+
+.add-field-btn:hover {
+  background: rgba(134, 22, 48, 0.06);
+  border-color: var(--primary);
+}

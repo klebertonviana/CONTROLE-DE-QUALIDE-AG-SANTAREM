@@ -11,6 +11,11 @@ function saudacaoHorario() {
   }
 }
 
+function formatarTextoPadrao(texto) {
+  if (!texto) return "";
+  return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+}
+
 // ================= USUÁRIOS =================
 const usuarios = [
   {
@@ -1082,6 +1087,28 @@ if (complaintTypeSearchInput && complaintTypesList && complaintType) {
 
 let emailTipoSelecionado = "";
 
+// ================= VALIDAÇÃO CAMPOS OBRIGATÓRIOS EMAIL =================
+function validarCamposEmailObrigatorios() {
+  const campos = document.querySelectorAll(
+    "#emailDynamicFields input, #emailDynamicFields select, #emailDynamicFields textarea"
+  );
+
+  for (const campo of campos) {
+    const valor = campo.value.trim();
+
+    if (!valor) {
+      campo.focus();
+      campo.style.borderColor = "#dc2626";
+      alert("Preencha todos os campos antes de gerar o e-mail.");
+      return false;
+    }
+
+    campo.style.borderColor = "";
+  }
+
+  return true;
+}
+
 // clique nos tipos de email
 document.querySelectorAll("#emailTypesList .script-item").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -1153,6 +1180,35 @@ document.querySelectorAll("#emailTypesList .script-item").forEach(btn => {
       `;
 
       document.getElementById("generateEmailButton").disabled = false;
+
+} else if (tipo === "processarTrocaProcedente") {
+
+  document.getElementById("emailDynamicFields").innerHTML = `
+    <div class="complaint-field">
+      <label>Nota de troca de titularidade</label>
+
+      <div id="notasTrocaContainer">
+        <input class="nota-troca-input" autocomplete="off">
+      </div>
+
+      <button type="button" id="addNotaTrocaButton" class="add-field-btn">
+        <i class="fa-solid fa-plus"></i> Adicionar outra nota
+      </button>
+    </div>
+  `;
+
+  document.getElementById("addNotaTrocaButton").addEventListener("click", () => {
+    const container = document.getElementById("notasTrocaContainer");
+
+    const input = document.createElement("input");
+    input.className = "nota-troca-input";
+    input.autocomplete = "off";
+    input.style.marginTop = "8px";
+
+    container.appendChild(input);
+  });
+
+  document.getElementById("generateEmailButton").disabled = false;
 
     } else if (tipo === "furtoTrafoQueimado") {
 
@@ -1503,6 +1559,201 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
         }
       });
 
+    } else if (tipo === "oficioPoderPublico") {
+
+  document.getElementById("emailDynamicFields").innerHTML = `
+    <div class="complaint-field">
+      <label>Órgão do Ofício</label>
+      <select id="email_orgao">
+        <option value="">Selecione...</option>
+        <option value="orgaosGerais">PROCON, MINISTÉRIO PÚBLICO, POLÍCIA CIVIL, POLÍCIA MILITAR, BOMBEIRO, DEFENSORIA PÚBLICA, JUIZADO</option>
+        <option value="prefeitura">PREFEITURA (ENTIDADES MUNICIPAIS)</option>
+        <option value="camara">CÂMARA DE VEREADORES</option>
+      </select>
+    </div>
+
+    <div id="camposComplementaresOficio"></div>
+  `;
+
+  const orgaoSelect = document.getElementById("email_orgao");
+  const campos = document.getElementById("camposComplementaresOficio");
+
+  orgaoSelect.addEventListener("change", () => {
+
+    if (orgaoSelect.value === "prefeitura") {
+
+      campos.innerHTML = `
+        <div class="complaint-field">
+          <label>De qual cidade é?</label>
+          <select id="email_cidade_oficio">
+            <option value="">Selecione...</option>
+            <option>SANTARÉM E REGIÃO</option>
+            <option>ORIXIMINÁ</option>
+            <option>ÓBIDOS</option>
+            <option>MONTE ALEGRE</option>
+            <option>ALENQUER</option>
+            <option>JURUTI</option>
+            <option>ITAITUBA E REGIÃO</option>
+            <option>NOVO PROGRESSO</option>
+            <option>RURÓPOLIS</option>
+            <option>MOJUÍ DOS CAMPOS</option>
+            <option>BELTERRA</option>
+          </select>
+        </div>
+
+        <div class="complaint-field">
+          <label>Número do Ofício (Ex: 0254/2024)</label>
+          <input id="email_numero_oficio" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Nome do Ofício (Ex: GAB / PCMI - REITERAÇÃO DE SOLICITAÇÕES NÃO RESPONDIDAS)</label>
+          <input id="email_nome_oficio" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Solicitante</label>
+          <input id="email_solicitante" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Telefone para retorno</label>
+          <input id="email_telefone" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>E-mail para retorno</label>
+          <input id="email_email" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Qual agência recebeu o ofício?</label>
+          <select id="email_agencia">
+            <option value="">Selecione...</option>
+            <option>SANTARÉM</option>
+            <option>ITAITUBA</option>
+            <option>ORIXIMINÁ</option>
+            <option>ÓBIDOS</option>
+            <option>MONTE ALEGRE</option>
+            <option>ALENQUER</option>
+            <option>JURUTI</option>
+            <option>NOVO PROGRESSO</option>
+            <option>RURÓPOLIS</option>
+          </select>
+        </div>
+      `;
+
+    } else if (orgaoSelect.value === "camara") {
+
+      campos.innerHTML = `
+        <div class="complaint-field">
+          <label>De qual cidade é?</label>
+          <select id="email_cidade_oficio">
+            <option value="">Selecione...</option>
+            <option>SANTARÉM</option>
+            <option>ORIXIMINÁ</option>
+            <option>ÓBIDOS</option>
+            <option>MONTE ALEGRE</option>
+            <option>ALENQUER</option>
+            <option>JURUTI</option>
+            <option>ITAITUBA</option>
+            <option>NOVO PROGRESSO</option>
+            <option>RURÓPOLIS</option>
+            <option>MOJUÍ DOS CAMPOS</option>
+            <option>BELTERRA</option>
+          </select>
+        </div>
+
+        <div class="complaint-field">
+          <label>Número do Ofício (Ex: 254/2024)</label>
+          <input id="email_numero_oficio" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+  <label>Nome do Ofício (Ex: GAB / CMJ - SOLICITAÇÃO DE INFORMAÇÕES)</label>
+  <input id="email_nome_oficio" autocomplete="off">
+</div>
+
+        <div class="complaint-field">
+          <label>Solicitante</label>
+          <input id="email_solicitante" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Telefone para retorno</label>
+          <input id="email_telefone" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>E-mail para retorno</label>
+          <input id="email_email" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Qual agência recebeu o ofício?</label>
+          <select id="email_agencia">
+            <option value="">Selecione...</option>
+            <option>SANTARÉM</option>
+            <option>ITAITUBA</option>
+            <option>ORIXIMINÁ</option>
+            <option>ÓBIDOS</option>
+            <option>MONTE ALEGRE</option>
+            <option>ALENQUER</option>
+            <option>JURUTI</option>
+            <option>NOVO PROGRESSO</option>
+            <option>RURÓPOLIS</option>
+          </select>
+        </div>
+      `;
+
+    } else if (orgaoSelect.value === "orgaosGerais") {
+
+      campos.innerHTML = `
+        <div class="complaint-field">
+          <label>Número do Ofício (Ex: 525/2021)</label>
+          <input id="email_numero_oficio" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Nome do Ofício (Ex: DCP/NP ou GAB/PCMI)</label>
+          <input id="email_nome_oficio" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Telefone para retorno</label>
+          <input id="email_telefone" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>E-mail para retorno</label>
+          <input id="email_email" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Agência</label>
+          <select id="email_agencia">
+            <option value="">Selecione...</option>
+            <option>SANTARÉM</option>
+            <option>ITAITUBA</option>
+            <option>ORIXIMINÁ</option>
+            <option>ÓBIDOS</option>
+            <option>MONTE ALEGRE</option>
+            <option>ALENQUER</option>
+            <option>JURUTI</option>
+            <option>NOVO PROGRESSO</option>
+            <option>RURÓPOLIS</option>
+          </select>
+        </div>
+      `;
+
+    } else {
+      campos.innerHTML = "";
+    }
+
+  });
+
+  document.getElementById("generateEmailButton").disabled = false;
+
     } else if (tipo === "cadastroLogradouro") {
 
   const opcoesLogradouro = `
@@ -1829,6 +2080,34 @@ Ressaltamos que somente após a devida atualização no sistema será realizada 
     document.getElementById("generateEmailButton").disabled = false;
   });
 
+    } else if (tipo === "cancelarDesligamentoTrocaProcedente") {
+
+      document.getElementById("emailDynamicFields").innerHTML = `
+        <div class="complaint-field">
+          <label>Nota de desligamento</label>
+          <div id="notasDesligamentoContainer">
+            <input class="nota-desligamento-input" autocomplete="off">
+          </div>
+
+          <button type="button" id="addNotaDesligamentoButton" class="add-field-btn">
+  <i class="fa-solid fa-plus"></i> Adicionar outra nota
+</button>
+        </div>
+      `;
+
+      document.getElementById("addNotaDesligamentoButton").addEventListener("click", () => {
+        const container = document.getElementById("notasDesligamentoContainer");
+
+        const input = document.createElement("input");
+        input.className = "nota-desligamento-input";
+        input.autocomplete = "off";
+        input.style.marginTop = "8px";
+
+        container.appendChild(input);
+      });
+
+      document.getElementById("generateEmailButton").disabled = false;
+
     } else if (tipo === "cartaAnuencia") {
 
       document.getElementById("emailDynamicFields").innerHTML = `
@@ -1957,6 +2236,8 @@ Ressaltamos que somente após a devida atualização no sistema será possível 
 
 document.getElementById("generateEmailButton").addEventListener("click", () => {
 
+if (!validarCamposEmailObrigatorios()) return;
+
   if (emailTipoSelecionado === "poda") {
     const numero = document.getElementById("email_numero")?.value.trim() || "";
     const solicitante = document.getElementById("email_solicitante")?.value.trim() || "";
@@ -1996,6 +2277,72 @@ E-mail: ${email}`;
 
     return;
   }
+  if (emailTipoSelecionado === "cancelarDesligamentoTrocaProcedente") {
+    const notas = Array.from(document.querySelectorAll(".nota-desligamento-input"))
+      .map(input => input.value.trim())
+      .filter(valor => valor !== "");
+
+    const notasFormatadas = notas.join("\n");
+
+    document.getElementById("emailTo").value =
+      "aline.riker@equatorialenergia.com.br";
+
+    document.getElementById("emailCc").value =
+      "tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br; juliana.lima@equatorialenergia.com.br";
+
+    document.getElementById("emailSubject").value =
+      "PRIORIDADE - CANCELAMENTO DE DESLIGAMENTO";
+
+    document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezada Aline,
+
+Solicito sua atenção para cancelamento da nota de desligamento, considerando a existência de nota de troca de titularidade procedente para a mesma unidade consumidora.
+
+Nota de desligamento:
+${notasFormatadas}
+
+A supervisão da agência segue em cópia, ciente e de acordo com a solicitação.
+
+Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
+
+    return;
+  }
+
+if (emailTipoSelecionado === "processarTrocaProcedente") {
+
+  const notas = Array.from(document.querySelectorAll(".nota-troca-input"))
+    .map(input => input.value.trim())
+    .filter(valor => valor !== "");
+
+  const notasFormatadas = notas.join("\n");
+
+  document.getElementById("emailTo").value =
+    "claudianne.oliveira@equatorialservicos.com.br";
+
+  document.getElementById("emailCc").value =
+    "tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br; juliana.lima@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; rodrigo.machado@equatorialservicos.com.br";
+
+  document.getElementById("emailSubject").value =
+    "EQTL PA - PROCESSAMENTO DE TROCA DE TITULARIDADE - REGIONAL OESTE";
+
+  document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezada Claudianne,
+
+Solicito seu apoio no processamento da(s) troca(s) de titularidade, considerando a procedência da(s) solicitação(ões), conforme dados abaixo:
+
+Nota(s) de troca de titularidade:
+${notasFormatadas}
+
+A supervisão da agência, Kleberton Viana, segue em cópia, ciente e de acordo com a solicitação.
+
+Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
+
+  return;
+}
 
   if (emailTipoSelecionado === "furtoTrafoQueimado") {
     const ocorrencia = document.getElementById("email_ocorrencia")?.value || "";
@@ -2275,6 +2622,114 @@ Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
 
     return;
   }
+
+  if (emailTipoSelecionado === "oficioPoderPublico") {
+  const orgao = document.getElementById("email_orgao")?.value || "";
+  const numero = document.getElementById("email_numero_oficio")?.value.trim() || "";
+  const nome = document.getElementById("email_nome_oficio")?.value.trim() || "";
+  const telefone = document.getElementById("email_telefone")?.value.trim() || "";
+  const email = document.getElementById("email_email")?.value.trim() || "";
+  const agencia = document.getElementById("email_agencia")?.value || "";
+  const cidade = document.getElementById("email_cidade_oficio")?.value || "";
+  const solicitante = document.getElementById("email_solicitante")?.value.trim() || "";
+
+  const copiaBase =
+    "tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br; juliana.lima@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; nayra.pinto@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br; miriam.godinho@equatorialenergia.com.br; meciano.evaristo@equatorialenergia.com.br;";
+
+  function aplicarRoteamentoPorCidade(cidadeSelecionada) {
+    const grupoSuzane = ["SANTARÉM E REGIÃO", "SANTARÉM", "MOJUÍ DOS CAMPOS", "BELTERRA"];
+    const grupoCarlindo = ["ORIXIMINÁ", "ÓBIDOS", "MONTE ALEGRE", "ALENQUER", "JURUTI"];
+    const grupoLeydiane = ["ITAITUBA E REGIÃO", "ITAITUBA", "NOVO PROGRESSO", "RURÓPOLIS"];
+
+    if (grupoSuzane.includes(cidadeSelecionada)) {
+      document.getElementById("emailTo").value =
+        "suzane.oliveira@equatorialenergia.com.br;";
+
+      document.getElementById("emailCc").value =
+        `${copiaBase} carlindo.junior@equatorialenergia.com.br; leydiane.fernandes@equatorialenergia.com.br; sandra.hermes@equatorialenergia.com.br; paulo.l.silva@equatorialenergia.com.br;`;
+    }
+
+    if (grupoCarlindo.includes(cidadeSelecionada)) {
+      document.getElementById("emailTo").value =
+        "carlindo.junior@equatorialenergia.com.br;";
+
+      document.getElementById("emailCc").value =
+        `${copiaBase} suzane.oliveira@equatorialenergia.com.br; leydiane.fernandes@equatorialenergia.com.br; sandra.hermes@equatorialenergia.com.br; paulo.l.silva@equatorialenergia.com.br;`;
+    }
+
+    if (grupoLeydiane.includes(cidadeSelecionada)) {
+      document.getElementById("emailTo").value =
+        "leydiane.fernandes@equatorialenergia.com.br;";
+
+      document.getElementById("emailCc").value =
+        `${copiaBase} suzane.oliveira@equatorialenergia.com.br; carlindo.junior@equatorialenergia.com.br; sandra.hermes@equatorialenergia.com.br; paulo.l.silva@equatorialenergia.com.br;`;
+    }
+  }
+
+  if (orgao === "prefeitura") {
+    aplicarRoteamentoPorCidade(cidade);
+
+    document.getElementById("emailSubject").value =
+      `OFÍCIO ${numero} - PREFEITURA MUNICIPAL DE ${formatarTextoPadrao(cidade)} - AGÊNCIA ${formatarTextoPadrao(agencia)}`.toUpperCase();
+
+    document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezados,
+
+Encaminhamos, para conhecimento, o ofício entregue na agência de ${formatarTextoPadrao(agencia)}, oriundo da Prefeitura Municipal de ${formatarTextoPadrao(cidade)}, conforme documento anexo.
+
+Solicitante: ${solicitante}
+Telefone para retorno: ${telefone}
+E-mail para retorno: ${email}`;
+
+    return;
+  }
+
+  if (orgao === "camara") {
+    aplicarRoteamentoPorCidade(cidade);
+
+    document.getElementById("emailSubject").value =
+      `OFÍCIO ${numero} - CÂMARA DE VEREADORES DE ${formatarTextoPadrao(cidade)} - AGÊNCIA ${formatarTextoPadrao(agencia)}`.toUpperCase();
+
+    document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezados,
+
+Encaminhamos, para conhecimento, o ofício entregue na agência de ${formatarTextoPadrao(agencia)}, oriundo da Câmara de Vereadores de ${formatarTextoPadrao(cidade)}, conforme documento anexo.
+
+Solicitante: ${solicitante}
+Telefone para retorno: ${telefone}
+E-mail para retorno: ${email}`;
+
+    return;
+  }
+
+  if (orgao === "orgaosGerais") {
+    document.getElementById("emailTo").value =
+      "oficiospa@equatorialenergia.com.br; oficio.backoffice@olmadv.com.br;";
+
+    document.getElementById("emailCc").value =
+      `${copiaBase} suzane.oliveira@equatorialenergia.com.br; carlindo.junior@equatorialenergia.com.br; leydiane.fernandes@equatorialenergia.com.br; sandra.hermes@equatorialenergia.com.br; paulo.l.silva@equatorialenergia.com.br;`;
+
+    document.getElementById("emailSubject").value =
+      `OFÍCIO N° ${numero} - ${nome} - AGÊNCIA ${formatarTextoPadrao(agencia)}`.toUpperCase();
+
+    document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezados,
+
+Encaminhamos, para conhecimento, o Ofício nº ${numero} – ${nome}, entregue na agência de ${formatarTextoPadrao(agencia)}, conforme documento anexo.
+
+Segue contato para retorno:
+Telefone: ${telefone}
+E-mail: ${email}`;
+
+    return;
+  }
+}
 
   if (emailTipoSelecionado === "cadastroLogradouro") {
     document.getElementById("emailTo").value =
