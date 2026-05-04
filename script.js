@@ -16,6 +16,21 @@ function formatarTextoPadrao(texto) {
   return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
 }
 
+function normalizarTextoLivre(texto) {
+  if (!texto) return "";
+
+  return texto
+    .toLowerCase()
+    .split("\n")
+    .map(linha => {
+      linha = linha.trim();
+      if (!linha) return "";
+
+      return linha.charAt(0).toUpperCase() + linha.slice(1);
+    })
+    .join("\n");
+}
+
 // ================= USUÁRIOS =================
 const usuarios = [
   {
@@ -338,6 +353,16 @@ Contato do supervisor: 93991416091
 Att. Viúva Negra`
   },
   {
+    titulo: "DESLOCAMENTO DE RAMAL",
+    tipo: "dinamicoDeslocamentoRamal",
+    texto: "Deslocamento de ramal cliente tipo de medição ponto de referência contato motivo"
+  },
+  {
+    titulo: "NIVEL DE TENSAO",
+    tipo: "dinamicoNivelTensao",
+    texto: "nivel de tensao oscilação fornecimento comodos periodo eletrodomestico comercio contato"
+  },
+  {
     titulo: "TRANSFERÊNCIA DE PARCELAMENTO EM APROVAÇÃO",
     texto: `Bom dia,
 
@@ -467,12 +492,22 @@ CONTA CONTRATO POSSUI PROTESTO: SIM / NÃO
 CLIENTE REGULAR COM A RECEITA FEDERAL: SIM / NÃO
 
 CLIENTE CIENTE DE JUROS, MULTA, CORREÇÃO MONETÁRIA, MAIS 1% DO FINANCIAMENTO DO PARCELAMENTO CONFORME O IPCA.`
-  }
+  },
 ];
 
 // ================= ELEMENTOS SCRIPTS =================
 const searchInput = document.getElementById("scriptSearchInput");
 const scriptsList = document.getElementById("scriptsList");
+const scriptsInitialMessage = document.getElementById("scriptsInitialMessage");
+const clearScriptSearchButton = document.getElementById("clearScriptSearchButton");
+
+const scriptsWorkArea = document.getElementById("scriptsWorkArea");
+const scriptDynamicFormCard = document.getElementById("scriptDynamicFormCard");
+const scriptResultCard = document.getElementById("scriptResultCard");
+const scriptDynamicFields = document.getElementById("scriptDynamicFields");
+const scriptDynamicBadge = document.getElementById("scriptDynamicBadge");
+const clearDynamicScriptButton = document.getElementById("clearDynamicScriptButton");
+
 const selectedTitle = document.getElementById("selectedScriptTitle");
 const selectedText = document.getElementById("selectedScriptText");
 const copyButton = document.getElementById("copyScriptButton");
@@ -480,7 +515,7 @@ const copyFeedback = document.getElementById("copyScriptFeedback");
 
 let scriptSelecionado = null;
 
-// ================= RENDER LISTA MODERNA =================
+// ================= RENDER LISTA DE SCRIPTS =================
 function renderScripts(filtro = "") {
   if (!scriptsList) return;
 
@@ -488,10 +523,15 @@ function renderScripts(filtro = "") {
 
   const termo = filtro.toLowerCase().trim();
 
-  const filtrados = scripts.filter(script =>
-    script.titulo.toLowerCase().includes(termo) ||
-    script.texto.toLowerCase().includes(termo)
-  );
+  scriptsList.classList.remove("scripts-list-hidden");
+scriptsInitialMessage.classList.add("hidden");
+
+const filtrados = termo
+  ? scripts.filter(script =>
+      script.titulo.toLowerCase().includes(termo) ||
+      script.texto.toLowerCase().includes(termo)
+    )
+  : scripts;
 
   if (filtrados.length === 0) {
     scriptsList.innerHTML = `
@@ -511,7 +551,7 @@ function renderScripts(filtro = "") {
 
     item.innerHTML = `
       <strong>${script.titulo}</strong>
-      <span>Visualizar mensagem padrão</span>
+      <span>${script.tipo ? "Preencher informações" : "Visualizar mensagem padrão"}</span>
     `;
 
     item.style.opacity = "0";
@@ -523,45 +563,488 @@ function renderScripts(filtro = "") {
     }, index * 35);
 
     item.addEventListener("click", () => {
-      document
-        .querySelectorAll("#scriptsList .script-item")
-        .forEach(i => i.classList.remove("selected"));
+  document
+    .querySelectorAll("#scriptsList .script-item")
+    .forEach(i => i.classList.remove("selected"));
 
-      item.classList.add("selected");
+  item.classList.add("selected");
 
-      scriptSelecionado = script;
+  scriptsList.classList.add("scripts-list-hidden");
+  scriptsInitialMessage.classList.add("hidden");
 
-      selectedTitle.textContent = script.titulo;
-      selectedText.textContent = script.texto;
-
-      copyButton.disabled = false;
       copyButton.innerHTML = `<i class="fa-regular fa-copy"></i> Copiar`;
       copyButton.classList.remove("copied");
       copyFeedback.textContent = "";
+
+      if (script.tipo === "dinamicoDeslocamentoRamal") {
+  abrirFormularioDeslocamentoRamal();
+  return;
+}
+
+if (script.tipo === "dinamicoNivelTensao") {
+  abrirFormularioNivelTensao();
+  return;
+}
+
+abrirScriptSimples(script);
+
+      abrirScriptSimples(script);
     });
 
     scriptsList.appendChild(item);
   });
 }
 
-// ================= ATIVAR SCRIPTS =================
+// ================= SCRIPT SIMPLES =================
+function abrirScriptSimples(script) {
+  scriptSelecionado = script;
+
+  scriptsWorkArea.classList.remove("hidden");
+  scriptsWorkArea.classList.add("simple-mode");
+
+  scriptDynamicFormCard.classList.add("hidden");
+  scriptResultCard.classList.remove("hidden");
+
+  selectedTitle.textContent = script.titulo;
+  selectedText.textContent = script.texto;
+
+  copyButton.disabled = false;
+}
+
+// ================= SCRIPT DINÂMICO - DESLOCAMENTO DE RAMAL =================
+function abrirFormularioDeslocamentoRamal() {
+  scriptSelecionado = {
+    titulo: "DESLOCAMENTO DE RAMAL",
+    texto: ""
+  };
+
+  scriptsWorkArea.classList.remove("hidden");
+  scriptsWorkArea.classList.remove("simple-mode");
+
+  scriptDynamicFormCard.classList.remove("hidden");
+  scriptResultCard.classList.remove("hidden");
+
+  scriptDynamicBadge.textContent = "Deslocamento de Ramal";
+  selectedTitle.textContent = "Script gerado";
+
+  scriptDynamicFields.innerHTML = `
+    <div class="dynamic-script-alert complaint-field full">
+      <strong>Prezado colaborador,</strong>
+      <p>Em caso de dúvidas, orientamos que as informações sejam consultadas na ferramenta Aprende+ da Equatorial Energia.</p>
+    </div>
+
+    <div class="complaint-field">
+      <label for="ramal_nomeCliente">Nome do cliente</label>
+      <input id="ramal_nomeCliente" type="text" placeholder="Digite o nome do cliente" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label for="ramal_tipoMedicao">Tipo de medição instalada</label>
+      <select id="ramal_tipoMedicao">
+        <option value="">Selecione...</option>
+        <option value="CPREDE">CPREDE</option>
+        <option value="CMB">CMB</option>
+        <option value="MEDIÇÃO REMOTA">MEDIÇÃO REMOTA</option>
+        <option value="CONVENCIONAL">CONVENCIONAL</option>
+      </select>
+    </div>
+
+    <div class="complaint-field">
+      <label for="ramal_pontoReferencia">Ponto de referência</label>
+      <input id="ramal_pontoReferencia" type="text" placeholder="Digite o ponto de referência" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label for="ramal_contato">Contato</label>
+      <input id="ramal_contato" type="text" placeholder="Digite o contato" autocomplete="off">
+    </div>
+
+    <div class="complaint-field full">
+      <label for="ramal_motivo">Motivo do serviço</label>
+      <textarea id="ramal_motivo" rows="4" placeholder="Digite o motivo do serviço"></textarea>
+    </div>
+  `;
+
+  copyButton.disabled = false;
+
+  document
+    .querySelectorAll("#ramal_nomeCliente, #ramal_tipoMedicao, #ramal_pontoReferencia, #ramal_contato, #ramal_motivo")
+    .forEach(campo => {
+      campo.addEventListener("input", gerarScriptDeslocamentoRamal);
+      campo.addEventListener("change", gerarScriptDeslocamentoRamal);
+    });
+
+  gerarScriptDeslocamentoRamal();
+}
+
+// ================= GERAR SCRIPT - DESLOCAMENTO DE RAMAL =================
+function gerarScriptDeslocamentoRamal() {
+  const nomeClienteInput = document.getElementById("ramal_nomeCliente");
+  const tipoMedicaoInput = document.getElementById("ramal_tipoMedicao");
+  const pontoReferenciaInput = document.getElementById("ramal_pontoReferencia");
+  const contatoInput = document.getElementById("ramal_contato");
+  const motivoInput = document.getElementById("ramal_motivo");
+
+  const nomeCliente = nomeClienteInput?.value.trim().toUpperCase() || "";
+  const tipoMedicao = tipoMedicaoInput?.value.trim().toUpperCase() || "";
+  const pontoReferencia = pontoReferenciaInput?.value.trim().toUpperCase() || "";
+  const contato = contatoInput?.value.trim().toUpperCase() || "";
+  const motivo = motivoInput?.value.trim().toUpperCase() || "";
+
+  const camposPreenchidos =
+    nomeCliente &&
+    tipoMedicao &&
+    pontoReferencia &&
+    contato &&
+    motivo;
+
+  const texto = `CLIENTE ${nomeCliente || "XXX"} VEIO AO ATENDIMENTO COM RG E CPF SOLICITAR O DESLOCAMENTO DE SEU RAMAL, POIS ${motivo || "COLOCAR O MOTIVO"}. AFIRMA QUE PONTALETE PADRÃO ESTÁ DEVIDAMENTE MONTADO NO LOCAL CORRETO E ESTÁ CIENTE DO PRAZO DE ATENDIMENTO DO SERVIÇO DE 30 DIAS.
+
+TIPO DE MEDIÇÃO INSTALADA: ${tipoMedicao || "XXX"}
+PONTO DE REFERÊNCIA: ${pontoReferencia || "XXX"}
+CONTATO: ${contato || "XXX"}`;
+
+  selectedText.textContent = texto;
+
+  // 🔴 CONTROLE DO BOTÃO COPIAR
+  atualizarCamposObrigatoriosScript([
+  "ramal_nomeCliente",
+  "ramal_tipoMedicao",
+  "ramal_pontoReferencia",
+  "ramal_contato",
+  "ramal_motivo"
+]);
+
+if (camposPreenchidos) {
+  copyButton.disabled = false;
+
+  scriptSelecionado = {
+    titulo: "DESLOCAMENTO DE RAMAL",
+    texto: texto
+  };
+} else {
+  copyButton.disabled = true;
+  scriptSelecionado = null;
+}
+}
+
+// ================= SCRIPT DINÂMICO - NIVEL DE TENSAO =================
+function abrirFormularioNivelTensao() {
+  scriptSelecionado = {
+    titulo: "NIVEL DE TENSAO",
+    texto: ""
+  };
+
+  scriptsWorkArea.classList.remove("hidden");
+  scriptsWorkArea.classList.remove("simple-mode");
+
+  scriptDynamicFormCard.classList.remove("hidden");
+  scriptResultCard.classList.remove("hidden");
+
+  scriptDynamicBadge.textContent = "Nível de Tensão";
+  selectedTitle.textContent = "Script gerado";
+
+  scriptDynamicFields.innerHTML = `
+    <div class="complaint-field">
+      <label for="tensao_nomeCliente">Nome do cliente</label>
+      <input id="tensao_nomeCliente" type="text" placeholder="Digite o nome do cliente" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_tempoProblema">Quanto tempo está ocorrendo o problema de fornecimento?</label>
+      <input id="tensao_tempoProblema" type="text" placeholder="Ex: 2 SEMANAS, 1 MÊS, 3 DIAS" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_ocorreSempre">Ocorre sempre?</label>
+      <select id="tensao_ocorreSempre">
+        <option value="">Selecione...</option>
+        <option value="TODOS OS DIAS">TODOS OS DIAS</option>
+        <option value="FIM DE SEMANA">FIM DE SEMANA</option>
+        <option value="ALGUNS DIAS DA SEMANA">ALGUNS DIAS DA SEMANA</option>
+      </select>
+    </div>
+
+    <div id="tensaoDiasSemanaArea" class="complaint-field hidden">
+      <label for="tensao_diasSemana">Informar o dia da semana específico</label>
+      <input id="tensao_diasSemana" type="text" placeholder="Ex: SEGUNDA, QUARTA E SEXTA" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_periodo">O problema acontece no período</label>
+      <select id="tensao_periodo">
+        <option value="">Selecione...</option>
+        <option value="MANHÃ">MANHÃ</option>
+        <option value="TARDE">TARDE</option>
+        <option value="NOITE">NOITE</option>
+        <option value="TODO O PERÍODO DO DIA">TODO O PERÍODO DO DIA</option>
+      </select>
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_comodos">Acontece em todos os cômodos ou apenas em alguns?</label>
+      <select id="tensao_comodos">
+        <option value="">Selecione...</option>
+        <option value="EM TODOS OS CÔMODOS">EM TODOS OS CÔMODOS</option>
+        <option value="APENAS EM ALGUNS CÔMODOS">APENAS EM ALGUNS CÔMODOS</option>
+      </select>
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_eletrodomestico">O cliente adquiriu algum eletrodoméstico ou equipamento elétrico recentemente?</label>
+      <select id="tensao_eletrodomestico">
+        <option value="">Selecione...</option>
+        <option value="SIM">SIM</option>
+        <option value="NÃO">NÃO</option>
+      </select>
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_comercio">O cliente tem conhecimento de comércio, oficina ou indústria próximo à residência?</label>
+      <select id="tensao_comercio">
+        <option value="">Selecione...</option>
+        <option value="NÃO">NÃO</option>
+        <option value="SIM">SIM</option>
+      </select>
+    </div>
+
+    <div id="tensaoQualComercioArea" class="complaint-field hidden">
+      <label for="tensao_qualComercio">Qual?</label>
+      <input id="tensao_qualComercio" type="text" placeholder="Informe qual comércio, oficina ou indústria" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_meioComunicacao">Meio de comunicação</label>
+      <input id="tensao_meioComunicacao" type="text" placeholder="Ex: TELEFONE, WHATSAPP, E-MAIL" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_pontoReferencia">Ponto de referência</label>
+      <input id="tensao_pontoReferencia" type="text" placeholder="Digite o ponto de referência" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label for="tensao_contato">Contato</label>
+      <input id="tensao_contato" type="text" placeholder="Digite o contato" autocomplete="off">
+    </div>
+  `;
+
+  const ocorreSempre = document.getElementById("tensao_ocorreSempre");
+  const comercio = document.getElementById("tensao_comercio");
+
+  ocorreSempre.addEventListener("change", () => {
+    const area = document.getElementById("tensaoDiasSemanaArea");
+    area.classList.toggle("hidden", ocorreSempre.value !== "ALGUNS DIAS DA SEMANA");
+    gerarScriptNivelTensao();
+  });
+
+  comercio.addEventListener("change", () => {
+    const area = document.getElementById("tensaoQualComercioArea");
+    area.classList.toggle("hidden", comercio.value !== "SIM");
+    gerarScriptNivelTensao();
+  });
+
+  document
+    .querySelectorAll("#scriptDynamicFields input, #scriptDynamicFields select")
+    .forEach(campo => {
+      campo.addEventListener("input", gerarScriptNivelTensao);
+      campo.addEventListener("change", gerarScriptNivelTensao);
+    });
+
+  gerarScriptNivelTensao();
+}
+
+// ================= GERAR SCRIPT - NIVEL DE TENSAO =================
+function gerarScriptNivelTensao() {
+  const nomeCliente = document.getElementById("tensao_nomeCliente")?.value.trim().toUpperCase() || "";
+  const tempoProblema = document.getElementById("tensao_tempoProblema")?.value.trim().toUpperCase() || "";
+  const ocorreSempre = document.getElementById("tensao_ocorreSempre")?.value.trim().toUpperCase() || "";
+  const diasSemana = document.getElementById("tensao_diasSemana")?.value.trim().toUpperCase() || "";
+  const periodo = document.getElementById("tensao_periodo")?.value.trim().toUpperCase() || "";
+  const comodos = document.getElementById("tensao_comodos")?.value.trim().toUpperCase() || "";
+  const eletrodomestico = document.getElementById("tensao_eletrodomestico")?.value.trim().toUpperCase() || "";
+  const comercio = document.getElementById("tensao_comercio")?.value.trim().toUpperCase() || "";
+  const qualComercio = document.getElementById("tensao_qualComercio")?.value.trim().toUpperCase() || "";
+  const meioComunicacao = document.getElementById("tensao_meioComunicacao")?.value.trim().toUpperCase() || "";
+  const pontoReferencia = document.getElementById("tensao_pontoReferencia")?.value.trim().toUpperCase() || "";
+  const contato = document.getElementById("tensao_contato")?.value.trim().toUpperCase() || "";
+
+  const precisaDiaSemana = ocorreSempre === "ALGUNS DIAS DA SEMANA";
+  const precisaQualComercio = comercio === "SIM";
+
+  const camposPreenchidos =
+    nomeCliente &&
+    tempoProblema &&
+    ocorreSempre &&
+    (!precisaDiaSemana || diasSemana) &&
+    periodo &&
+    comodos &&
+    eletrodomestico &&
+    comercio &&
+    (!precisaQualComercio || qualComercio) &&
+    meioComunicacao &&
+    pontoReferencia &&
+    contato;
+
+  const texto = `PARCEIRO ${nomeCliente || "XXX"}, RECLAMA QUE ESTÁ OCORRENDO OSCILAÇÃO CONSTANTE NA INSTALAÇÃO HÁ MAIS ${tempoProblema || "XXX"}.
+
+INFORMA QUE OCORRE SEMPRE: ${ocorreSempre || "XXX"}
+${precisaDiaSemana ? `QUAIS? ${diasSemana || "XXX"}\n` : ""}
+O PROBLEMA ACONTECE NO PERÍODO: ${periodo || "XXX"}
+
+ACONTECE EM TODOS OS CÔMODOS DA INSTALAÇÃO OU APENAS EM ALGUNS CÔMODOS? ${comodos || "XXX"}
+
+O CLIENTE ADQUIRIU ALGUM ELETRODOMÉSTICO OU EQUIPAMENTO ELÉTRICO RECENTEMENTE? ${eletrodomestico || "XXX"}
+
+O CLIENTE TEM CONHECIMENTO DE ALGUM COMÉRCIO, OFICINA OU INDÚSTRIA PRÓX. A SUA RESIDÊNCIA? ${comercio || "XXX"}${precisaQualComercio ? ` - QUAL: ${qualComercio || "XXX"}` : ""}
+
+MEIO DE COMUNICAÇÃO: ${meioComunicacao || "XXX"}
+PONTO DE REFERÊNCIA: ${pontoReferencia || "XXX"}
+CONTATO: ${contato || "XXX"}`;
+
+  selectedText.textContent = texto;
+
+const camposObrigatoriosNivelTensao = [
+  "tensao_nomeCliente",
+  "tensao_tempoProblema",
+  "tensao_ocorreSempre",
+  "tensao_periodo",
+  "tensao_comodos",
+  "tensao_eletrodomestico",
+  "tensao_comercio",
+  "tensao_meioComunicacao",
+  "tensao_pontoReferencia",
+  "tensao_contato"
+];
+
+if (precisaDiaSemana) {
+  camposObrigatoriosNivelTensao.push("tensao_diasSemana");
+}
+
+if (precisaQualComercio) {
+  camposObrigatoriosNivelTensao.push("tensao_qualComercio");
+}
+
+atualizarCamposObrigatoriosScript(camposObrigatoriosNivelTensao);
+
+  if (camposPreenchidos) {
+    copyButton.disabled = false;
+
+    scriptSelecionado = {
+      titulo: "NIVEL DE TENSAO",
+      texto: texto
+    };
+  } else {
+    copyButton.disabled = true;
+    scriptSelecionado = null;
+  }
+}
+
+// ================= CAMPOS OBRIGATÓRIOS - SCRIPTS DINÂMICOS =================
+function atualizarCamposObrigatoriosScript(idsCampos) {
+  let temCampoVazio = false;
+
+  idsCampos.forEach(id => {
+    const campo = document.getElementById(id);
+    if (!campo) return;
+
+    const vazio = !campo.value.trim();
+
+    campo.classList.toggle("campo-obrigatorio-erro", vazio);
+
+    if (vazio) {
+      temCampoVazio = true;
+    }
+  });
+
+  let aviso = document.getElementById("scriptRequiredMessage");
+
+  if (temCampoVazio) {
+    if (!aviso) {
+      aviso = document.createElement("div");
+      aviso.id = "scriptRequiredMessage";
+      aviso.className = "script-required-message";
+      aviso.textContent = "Preencha todos os campos obrigatórios para copiar o registro.";
+      scriptDynamicFormCard.appendChild(aviso);
+    }
+  } else if (aviso) {
+    aviso.remove();
+  }
+}
+
+// ================= LIMPAR SCRIPT DINÂMICO =================
+if (clearDynamicScriptButton) {
+  clearDynamicScriptButton.addEventListener("click", () => {
+    document
+      .querySelectorAll("#scriptDynamicFields input, #scriptDynamicFields select, #scriptDynamicFields textarea")
+      .forEach(campo => {
+        campo.value = "";
+      });
+
+    if (scriptDynamicBadge.textContent === "Nível de Tensão") {
+  document.getElementById("tensaoDiasSemanaArea")?.classList.add("hidden");
+  document.getElementById("tensaoQualComercioArea")?.classList.add("hidden");
+  gerarScriptNivelTensao();
+} else {
+  gerarScriptDeslocamentoRamal();
+}
+  });
+}
+
+// ================= ATIVAR BUSCA E CÓPIA DOS SCRIPTS =================
 if (searchInput && scriptsList && selectedTitle && selectedText && copyButton && copyFeedback) {
-  renderScripts();
+  scriptsList.classList.add("scripts-list-hidden");
+  scriptsInitialMessage.classList.remove("hidden");
+
+  searchInput.addEventListener("focus", () => {
+    renderScripts(searchInput.value);
+  });
 
   searchInput.addEventListener("input", () => {
     renderScripts(searchInput.value);
 
-    selectedTitle.textContent = "Selecione um script";
-    selectedText.textContent = "Clique em um script ao lado para visualizar o conteúdo completo.";
+    scriptsWorkArea.classList.add("hidden");
+    scriptsWorkArea.classList.remove("simple-mode");
+
+    scriptDynamicFormCard.classList.add("hidden");
+    scriptResultCard.classList.add("hidden");
+
+    selectedTitle.textContent = "Script";
+    selectedText.textContent = "Selecione um script para visualizar o conteúdo.";
+
     copyButton.disabled = true;
     copyButton.innerHTML = `<i class="fa-regular fa-copy"></i> Copiar`;
     copyButton.classList.remove("copied");
     copyFeedback.textContent = "";
+
+    scriptSelecionado = null;
+  });
+
+  clearScriptSearchButton.addEventListener("click", () => {
+    searchInput.value = "";
+
+scriptsList.classList.add("scripts-list-hidden");
+scriptsInitialMessage.classList.remove("hidden");
+
+    scriptsWorkArea.classList.add("hidden");
+    scriptsWorkArea.classList.remove("simple-mode");
+
+    scriptDynamicFormCard.classList.add("hidden");
+    scriptResultCard.classList.add("hidden");
+
+    selectedTitle.textContent = "Script";
+    selectedText.textContent = "Selecione um script para visualizar o conteúdo.";
+
+    copyButton.disabled = true;
+    copyButton.innerHTML = `<i class="fa-regular fa-copy"></i> Copiar`;
+    copyButton.classList.remove("copied");
+    copyFeedback.textContent = "";
+
     scriptSelecionado = null;
   });
 
   copyButton.addEventListener("click", async () => {
-    if (!scriptSelecionado) return;
+    if (!scriptSelecionado || !scriptSelecionado.texto) return;
 
     await navigator.clipboard.writeText(scriptSelecionado.texto);
 
@@ -658,28 +1141,30 @@ const complaintFields = {
   ],
 
   geradora: [
-    ["faturaReclamada", "Fatura reclamada", "text"],
-    ["valorFatura", "Valor da fatura", "text"],
-    ["meioResposta", "Meio de resposta da reclamação", "select", ["TELEFONE", "CARTA", "E-MAIL"]],
-    ["whatsapp", "Aceita receber resposta / fatura via WhatsApp?", "select", ["SIM", "NÃO"]],
-    ["telefone", "Telefone para contato", "text"],
-    ["horario", "Melhor horário para contato", "select", ["MANHÃ", "TARDE"]],
-    ["email", "E-mail", "text"],
-    ["autoriza", "Autoriza terceiros?", "select", ["SIM", "NÃO"]]
-  ],
+  ["faturaReclamada", "Fatura reclamada", "text"],
+  ["valorFatura", "Valor da fatura", "text"],
+  ["meioResposta", "Meio de resposta da reclamação", "select", ["TELEFONE", "CARTA", "E-MAIL"]],
+  ["whatsapp", "Aceita receber resposta / fatura via WhatsApp?", "select", ["SIM", "NÃO"]],
+  ["telefone", "Telefone para contato", "text"],
+  ["horario", "Melhor horário para contato", "select", ["MANHÃ", "TARDE"]],
+  ["email", "E-mail", "text"],
+  ["autoriza", "Autoriza terceiros?", "select", ["SIM", "NÃO"]],
+  ["complementares", "Informações complementares", "textarea"]
+],
 
-  erroLeituraAtual: [
-    ["faturaReclamada", "Fatura reclamada", "text"],
-    ["valorFatura", "Valor da fatura", "text"],
-    ["dataFoto", "Data da foto apresentada pelo cliente", "text"],
-    ["leituraFoto", "Leitura que está na foto apresentada", "text"],
-    ["meioResposta", "Meio de resposta da reclamação", "select", ["TELEFONE", "CARTA", "E-MAIL"]],
-    ["whatsapp", "Aceita receber resposta / fatura via WhatsApp?", "select", ["SIM", "NÃO"]],
-    ["telefone", "Telefone para contato", "text"],
-    ["horario", "Melhor horário para contato", "select", ["MANHÃ", "TARDE"]],
-    ["email", "E-mail", "text"],
-    ["autoriza", "Autoriza terceiros?", "select", ["SIM", "NÃO"]]
-  ],
+erroLeituraAtual: [
+  ["faturaReclamada", "Fatura reclamada", "text"],
+  ["valorFatura", "Valor da fatura", "text"],
+  ["dataFoto", "Data da foto apresentada pelo cliente", "text"],
+  ["leituraFoto", "Leitura que está na foto apresentada", "text"],
+  ["meioResposta", "Meio de resposta da reclamação", "select", ["TELEFONE", "CARTA", "E-MAIL"]],
+  ["whatsapp", "Aceita receber resposta / fatura via WhatsApp?", "select", ["SIM", "NÃO"]],
+  ["telefone", "Telefone para contato", "text"],
+  ["horario", "Melhor horário para contato", "select", ["MANHÃ", "TARDE"]],
+  ["email", "E-mail", "text"],
+  ["autoriza", "Autoriza terceiros?", "select", ["SIM", "NÃO"]],
+  ["complementares", "Informações complementares", "textarea"]
+],
 
   prazos: [
   ["notaReclamada", "Nota reclamada", "text"],
@@ -890,7 +1375,7 @@ ANÁLISE DO ATENDENTE: APÓS ANÁLISE DA FATURA, FOI IDENTIFICADO QUE HÁ REGIST
 
 ${blocoContato()}
 
-INFORMAÇÕES COMPLEMENTARES:
+INFORMAÇÕES COMPLEMENTARES: ${valorCampo("complementares")}
 
 ${cienciaPrazo()}`;
   }
@@ -906,7 +1391,7 @@ ANÁLISE DO ATENDENTE: APÓS ANÁLISE DA FATURA, FOI IDENTIFICADO QUE A LEITURA 
 
 ${blocoContato()}
 
-INFORMAÇÕES COMPLEMENTARES:
+INFORMAÇÕES COMPLEMENTARES: ${valorCampo("complementares")}
 
 ${cienciaPrazo()}`;
   }
@@ -967,9 +1452,17 @@ if (copyComplaintButton) {
 // ================= BUSCA GERADOR DE EMAIL =================
 const emailSearchInput = document.getElementById("emailSearchInput");
 const emailTypesList = document.getElementById("emailTypesList");
+const emailInitialMessage = document.getElementById("emailInitialMessage");
+const clearEmailSearchButton = document.getElementById("clearEmailSearchButton");
 
 if (emailSearchInput && emailTypesList) {
   const emailItems = emailTypesList.querySelectorAll(".script-item");
+
+  emailTypesList.classList.add("scripts-list-hidden");
+
+  if (emailInitialMessage) {
+    emailInitialMessage.classList.remove("hidden");
+  }
 
   emailItems.forEach((item, index) => {
     item.style.opacity = "0";
@@ -983,12 +1476,36 @@ if (emailSearchInput && emailTypesList) {
     item.addEventListener("click", () => {
       emailItems.forEach(i => i.classList.remove("selected"));
       item.classList.add("selected");
+
+      emailTypesList.classList.add("scripts-list-hidden");
+
+      if (emailInitialMessage) {
+        emailInitialMessage.classList.add("hidden");
+      }
+    });
+  });
+
+  emailSearchInput.addEventListener("focus", () => {
+    emailTypesList.classList.remove("scripts-list-hidden");
+
+    if (emailInitialMessage) {
+      emailInitialMessage.classList.add("hidden");
+    }
+
+    emailItems.forEach(item => {
+      item.style.display = "flex";
     });
   });
 
   emailSearchInput.addEventListener("input", () => {
     const termo = emailSearchInput.value.toLowerCase().trim();
     let encontrados = 0;
+
+    emailTypesList.classList.remove("scripts-list-hidden");
+
+    if (emailInitialMessage) {
+      emailInitialMessage.classList.add("hidden");
+    }
 
     emailItems.forEach(item => {
       const texto = item.innerText.toLowerCase();
@@ -1017,6 +1534,27 @@ if (emailSearchInput && emailTypesList) {
       empty.remove();
     }
   });
+
+  if (clearEmailSearchButton) {
+    clearEmailSearchButton.addEventListener("click", () => {
+      emailSearchInput.value = "";
+
+      emailTypesList.classList.add("scripts-list-hidden");
+
+      if (emailInitialMessage) {
+        emailInitialMessage.classList.remove("hidden");
+      }
+
+      emailItems.forEach(item => {
+        item.style.display = "flex";
+      });
+
+      const empty = document.getElementById("emailEmptyState");
+      if (empty) {
+        empty.remove();
+      }
+    });
+  }
 }
 
 // ================= BUSCA CAMPOS RECLAMAÇÃO =================
@@ -1040,14 +1578,16 @@ const complaintTypesList = document.getElementById("complaintTypesList");
 if (complaintTypeSearchInput && complaintTypesList && complaintType) {
   const complaintTypeItems = complaintTypesList.querySelectorAll(".script-item");
 
+  complaintTypesList.classList.add("scripts-list-hidden");
+
   complaintTypeSearchInput.addEventListener("focus", () => {
-    complaintTypesList.classList.remove("hidden");
+    complaintTypesList.classList.remove("scripts-list-hidden");
   });
 
   complaintTypeSearchInput.addEventListener("input", () => {
     const termo = complaintTypeSearchInput.value.toLowerCase().trim();
 
-    complaintTypesList.classList.remove("hidden");
+    complaintTypesList.classList.remove("scripts-list-hidden");
 
     complaintTypeItems.forEach(item => {
       const texto = item.innerText.toLowerCase();
@@ -1068,7 +1608,13 @@ if (complaintTypeSearchInput && complaintTypesList && complaintType) {
 
       montarCamposReclamacao(tipo);
 
-      complaintTypesList.classList.add("hidden");
+const complaintWorkArea = document.getElementById("complaintWorkArea");
+
+if (complaintWorkArea) {
+  complaintWorkArea.classList.remove("hidden");
+}
+
+      complaintTypesList.classList.add("scripts-list-hidden");
     });
   });
 
@@ -1078,7 +1624,7 @@ if (complaintTypeSearchInput && complaintTypesList && complaintType) {
       complaintTypesList.contains(e.target);
 
     if (!clicouDentro) {
-      complaintTypesList.classList.add("hidden");
+      complaintTypesList.classList.add("scripts-list-hidden");
     }
   });
 }
@@ -1181,6 +1727,193 @@ document.querySelectorAll("#emailTypesList .script-item").forEach(btn => {
 
       document.getElementById("generateEmailButton").disabled = false;
 
+} else if (tipo === "emailSupervisaoOutros") {
+
+  document.getElementById("emailDynamicFields").innerHTML = `
+
+    <div class="complaint-field">
+      <label>Assunto</label>
+      <input id="email_assunto_livre" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label>Texto do e-mail</label>
+      <textarea id="email_texto_livre" rows="6" style="resize: vertical;"></textarea>
+    </div>
+
+  `;
+
+  document.getElementById("generateEmailButton").disabled = false;
+
+} else if (tipo === "documentoJudicialDescumprimento") {
+
+  document.getElementById("emailDynamicFields").innerHTML = `
+
+    <div style="background:#ffe5e5; padding:12px; border-radius:8px; font-size:13px; margin-bottom:10px;">
+      <strong>ATENÇÃO:</strong><br><br>
+      Antes de prosseguir, entrar em contato com o Relacionamento com o Cliente (preferencialmente Nayra Freitas)
+      para confirmar se a distribuidora já foi notificada pelo oficial de justiça.
+    </div>
+
+    <div class="complaint-field">
+      <label>Tipo de documento judicial</label>
+      <select id="email_tipo_documento">
+        <option value="">Selecione...</option>
+        <option>SENTENÇA</option>
+        <option>LIMINAR</option>
+        <option>DECISÃO</option>
+        <option>INTIMAÇÃO</option>
+        <option>CITAÇÃO</option>
+      </select>
+    </div>
+
+    <div class="complaint-field">
+      <label>Número do processo</label>
+      <input id="email_processo" placeholder="Ex: 0800518-38.2020.8.14.0115">
+    </div>
+
+    <div class="complaint-field">
+      <label>Nome do cliente</label>
+      <input id="email_cliente">
+    </div>
+
+    <div class="complaint-field">
+      <label>Conta contrato</label>
+      <input id="email_conta">
+    </div>
+
+    <div class="complaint-field">
+      <label>Agência</label>
+      <select id="email_agencia">
+        <option value="">Selecione...</option>
+        <option>SANTARÉM</option>
+        <option>ITAITUBA</option>
+        <option>ORIXIMINÁ</option>
+        <option>ÓBIDOS</option>
+        <option>MONTE ALEGRE</option>
+        <option>ALENQUER</option>
+        <option>JURUTI</option>
+        <option>NOVO PROGRESSO</option>
+        <option>RURÓPOLIS</option>
+      </select>
+    </div>
+
+    <div class="complaint-field">
+      <label>Data da entrega</label>
+      <input type="date" id="email_data">
+    </div>
+
+    <div class="complaint-field">
+      <label>Hora da entrega</label>
+      <input type="time" id="email_hora">
+    </div>
+  `;
+
+  document.getElementById("generateEmailButton").disabled = false;
+
+} else if (tipo === "recebimentoDocumentoJudicial") {
+
+  document.getElementById("emailDynamicFields").innerHTML = `
+
+    <div class="complaint-field">
+      <label>Tipo de documento judicial</label>
+      <select id="email_tipo_documento">
+        <option value="">Selecione...</option>
+        <option>SENTENÇA</option>
+        <option>CITAÇÃO</option>
+        <option>INTIMAÇÃO</option>
+        <option>DECISÃO</option>
+        <option>LIMINAR</option>
+      </select>
+    </div>
+
+    <div class="complaint-field">
+      <label>Documento entregue por oficial de justiça?</label>
+      <select id="email_oficial">
+        <option value="">Selecione...</option>
+        <option value="sim">SIM</option>
+        <option value="nao">NÃO</option>
+      </select>
+    </div>
+
+    <div id="areaAvisoJudicial"></div>
+    <div id="areaCamposJudicial"></div>
+  `;
+
+  document.getElementById("email_oficial").addEventListener("change", () => {
+    const oficial = document.getElementById("email_oficial").value;
+    const aviso = document.getElementById("areaAvisoJudicial");
+    const campos = document.getElementById("areaCamposJudicial");
+
+    aviso.innerHTML = "";
+    campos.innerHTML = "";
+
+    if (oficial === "nao") {
+
+      aviso.innerHTML = `
+        <div style="background:#fff3cd; padding:12px; border-radius:8px; font-size:13px;">
+          <strong>Prezado colaborador,</strong><br><br>
+          Documentos judiciais não devem ser recebidos diretamente na agência quando apresentados por clientes ou advogados.<br><br>
+          Encaminhar para Relacionamento com o Cliente (Nayra Freitas) e verificar se já houve intimação formal.
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = true;
+
+    }
+
+    if (oficial === "sim") {
+
+      campos.innerHTML = `
+        <div class="complaint-field">
+          <label>Número do processo (Ex: 0800518-38.2020.8.14.0115)</label>
+          <input id="email_processo">
+        </div>
+
+        <div class="complaint-field">
+          <label>Nome do cliente</label>
+          <input id="email_cliente">
+        </div>
+
+        <div class="complaint-field">
+          <label>Conta contrato</label>
+          <input id="email_conta">
+        </div>
+
+        <div class="complaint-field">
+          <label>Agência</label>
+          <select id="email_agencia">
+            <option value="">Selecione...</option>
+            <option>SANTARÉM</option>
+            <option>ITAITUBA</option>
+            <option>ORIXIMINÁ</option>
+            <option>ÓBIDOS</option>
+            <option>MONTE ALEGRE</option>
+            <option>ALENQUER</option>
+            <option>JURUTI</option>
+            <option>NOVO PROGRESSO</option>
+            <option>RURÓPOLIS</option>
+          </select>
+        </div>
+
+        <div class="complaint-field">
+          <label>Data da entrega</label>
+          <input type="date" id="email_data">
+        </div>
+
+        <div class="complaint-field">
+          <label>Hora da entrega</label>
+          <input type="time" id="email_hora">
+        </div>
+      `;
+
+      document.getElementById("generateEmailButton").disabled = false;
+    }
+
+  });
+
+  document.getElementById("generateEmailButton").disabled = true;
+
 } else if (tipo === "processarTrocaProcedente") {
 
   document.getElementById("emailDynamicFields").innerHTML = `
@@ -1239,6 +1972,87 @@ document.querySelectorAll("#emailTypesList .script-item").forEach(btn => {
       `;
 
       document.getElementById("generateEmailButton").disabled = false;
+
+} else if (tipo === "oficioCliente") {
+
+  document.getElementById("emailDynamicFields").innerHTML = `
+    <div class="complaint-field">
+      <label>Nome do parceiro / cliente</label>
+      <input id="email_nome_parceiro" autocomplete="off">
+    </div>
+
+    <div class="complaint-field">
+      <label>Nome da agência</label>
+      <select id="email_agencia">
+        <option value="">Selecione...</option>
+        <option>SANTARÉM</option>
+        <option>ITAITUBA</option>
+        <option>ORIXIMINÁ</option>
+        <option>ÓBIDOS</option>
+        <option>MONTE ALEGRE</option>
+        <option>ALENQUER</option>
+        <option>JURUTI</option>
+        <option>NOVO PROGRESSO</option>
+        <option>RURÓPOLIS</option>
+      </select>
+    </div>
+
+    <div class="complaint-field">
+      <label>Possui conta contrato?</label>
+      <select id="email_possui_conta">
+        <option value="">Selecione...</option>
+        <option value="sim">SIM</option>
+        <option value="nao">NÃO</option>
+      </select>
+    </div>
+
+    <div id="emailOficioClienteContaArea"></div>
+  `;
+
+  document.getElementById("email_possui_conta").addEventListener("change", () => {
+    const possuiConta = document.getElementById("email_possui_conta").value;
+    const area = document.getElementById("emailOficioClienteContaArea");
+
+    area.innerHTML = "";
+
+    if (possuiConta === "sim") {
+      area.innerHTML = `
+        <div class="complaint-field">
+          <label>Conta contrato</label>
+          <input id="email_conta" autocomplete="off">
+        </div>
+
+        <div class="complaint-field">
+          <label>Possui nota de serviço para tratativa?</label>
+          <select id="email_possui_nota">
+            <option value="">Selecione...</option>
+            <option value="sim">SIM</option>
+            <option value="nao">NÃO</option>
+          </select>
+        </div>
+
+        <div id="emailOficioClienteNotaArea"></div>
+      `;
+
+      document.getElementById("email_possui_nota").addEventListener("change", () => {
+        const possuiNota = document.getElementById("email_possui_nota").value;
+        const notaArea = document.getElementById("emailOficioClienteNotaArea");
+
+        notaArea.innerHTML = "";
+
+        if (possuiNota === "sim") {
+          notaArea.innerHTML = `
+            <div class="complaint-field">
+              <label>Nota de serviço</label>
+              <input id="email_nota" autocomplete="off">
+            </div>
+          `;
+        }
+      });
+    }
+  });
+
+  document.getElementById("generateEmailButton").disabled = false;
 
     } else if (tipo === "conexaoMla") {
 
@@ -2238,6 +3052,101 @@ document.getElementById("generateEmailButton").addEventListener("click", () => {
 
 if (!validarCamposEmailObrigatorios()) return;
 
+if (emailTipoSelecionado === "emailSupervisaoOutros") {
+
+  const assunto = document.getElementById("email_assunto_livre")?.value || "";
+  const textoInput = document.getElementById("email_texto_livre")?.value || "";
+const texto = normalizarTextoLivre(textoInput);
+
+  document.getElementById("emailTo").value =
+    "kleberton.cruz@cgbengenharia.com.br;";
+
+  document.getElementById("emailCc").value =
+    "tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br;";
+
+  document.getElementById("emailSubject").value =
+    assunto.toUpperCase();
+
+  document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezado Kleberton,
+
+${texto}`;
+
+  return;
+}
+
+if (emailTipoSelecionado === "documentoJudicialDescumprimento") {
+
+  const tipo = document.getElementById("email_tipo_documento")?.value || "";
+  const processo = document.getElementById("email_processo")?.value || "";
+  const cliente = document.getElementById("email_cliente")?.value || "";
+  const conta = document.getElementById("email_conta")?.value || "";
+  const agencia = document.getElementById("email_agencia")?.value || "";
+
+  const dataInput = document.getElementById("email_data")?.value || "";
+  const data = dataInput ? dataInput.split("-").reverse().join("/") : "";
+
+  const hora = document.getElementById("email_hora")?.value || "";
+
+  document.getElementById("emailTo").value =
+    "descumprimento@equatorialenergia.com.br";
+
+  document.getElementById("emailCc").value =
+    "evelyn.mattos@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; nayra.pinto@equatorialenergia.com.br; miriam.godinho@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br;";
+
+  document.getElementById("emailSubject").value =
+    `DESCUMPRIMENTO - PROCESSO N° ${processo} / ${formatarTextoPadrao(cliente)} - CONTA CONTRATO: ${conta} - ${formatarTextoPadrao(agencia)}`.toUpperCase();
+
+  document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezados,
+
+Encaminhamos, para conhecimento e análise, o processo judicial nº ${processo}, referente à cliente ${formatarTextoPadrao(cliente)}, conta contrato ${conta}.
+
+O documento foi apresentado pelo cliente na agência de atendimento de ${formatarTextoPadrao(agencia)}, na data de ${data} às ${hora}, com alegação de descumprimento de decisão judicial de ${tipo.toLowerCase()}.
+
+Permanecemos à disposição para quaisquer esclarecimentos adicionais.`;
+
+  return;
+}
+
+if (emailTipoSelecionado === "recebimentoDocumentoJudicial") {
+
+  const tipo = document.getElementById("email_tipo_documento")?.value || "";
+  const processo = document.getElementById("email_processo")?.value || "";
+  const cliente = document.getElementById("email_cliente")?.value || "";
+  const conta = document.getElementById("email_conta")?.value || "";
+  const agencia = document.getElementById("email_agencia")?.value || "";
+
+  const dataInput = document.getElementById("email_data")?.value || "";
+  const data = dataInput ? dataInput.split("-").reverse().join("/") : "";
+
+  const hora = document.getElementById("email_hora")?.value || "";
+
+  document.getElementById("emailTo").value =
+    "liminar@equatorialenergia.com.br; juridico.pa@equatorialenergia.com.br;";
+
+  document.getElementById("emailCc").value =
+    "evelyn.mattos@equatorialenergia.com.br; juliana.lima@equatorialenergia.com.br; aline.riker@equatorialenergia.com.br; nayra.pinto@equatorialenergia.com.br; miriam.godinho@equatorialenergia.com.br; tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br;";
+
+  document.getElementById("emailSubject").value =
+    `${tipo} - PROCESSO N° ${processo} / ${formatarTextoPadrao(cliente)} - CONTA CONTRATO: ${conta} - ${formatarTextoPadrao(agencia)}`.toUpperCase();
+
+  document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezados,
+
+Encaminhamos, para conhecimento e análise, o processo judicial nº ${processo}, referente à cliente ${formatarTextoPadrao(cliente)} conta contrato ${conta}, entregue na agência de ${formatarTextoPadrao(agencia)} na data de ${data} às ${hora}.
+
+Permanecemos à disposição para quaisquer esclarecimentos adicionais.`;
+
+  return;
+}
+
   if (emailTipoSelecionado === "poda") {
     const numero = document.getElementById("email_numero")?.value.trim() || "";
     const solicitante = document.getElementById("email_solicitante")?.value.trim() || "";
@@ -2309,6 +3218,49 @@ Permaneço à disposição para quaisquer esclarecimentos adicionais.`;
 
     return;
   }
+
+if (emailTipoSelecionado === "oficioCliente") {
+
+  const parceiro = document.getElementById("email_nome_parceiro")?.value.trim() || "";
+  const agencia = document.getElementById("email_agencia")?.value || "";
+  const possuiConta = document.getElementById("email_possui_conta")?.value || "";
+  const conta = document.getElementById("email_conta")?.value.trim() || "";
+  const possuiNota = document.getElementById("email_possui_nota")?.value || "";
+  const nota = document.getElementById("email_nota")?.value.trim() || "";
+
+  const linhaConta = possuiConta === "sim" && conta
+    ? `\nConta contrato: ${conta}`
+    : "";
+
+  const linhaNota = possuiNota === "sim" && nota
+    ? `\nNota: ${nota}`
+    : "";
+
+  const assuntoConta = possuiConta === "sim" && conta
+    ? ` - CONTA CONTRATO: ${conta}`
+    : "";
+
+  document.getElementById("emailTo").value =
+    "aline.riker@equatorialenergia.com.br;";
+
+  document.getElementById("emailCc").value =
+    "tulia.lopes@cgbengenharia.com.br; carlos.almeida@cgbengenharia.com.br; kleberton.cruz@cgbengenharia.com.br; eveline.gato@cgbengenharia.com.br; marliane.santos@cgbengenharia.com.br; adilson.coelho@cgbengenharia.com.br; julyanne.rodrigues@cgbengenharia.com.br; luana.caires@cgbengenharia.com.br; ana.lopes@cgbengenharia.com.br; ana.magalhaes@cgbengenharia.com.br; carolina.silva@cgbengenharia.com.br; marciele.ferreira@cgbengenharia.com.br; abel.tabosa@cgbengenharia.com.br; juliana.lima@equatorialenergia.com.br; gilliard.vaz@equatorialenergia.com.br;";
+
+  document.getElementById("emailSubject").value =
+    `OFÍCIO - CLIENTE: ${parceiro}${assuntoConta} - AGÊNCIA ${formatarTextoPadrao(agencia)}`.toUpperCase();
+
+  document.getElementById("emailBody").value =
+`${saudacaoHorario()}
+
+Prezada Aline,
+
+Encaminhamos, para conhecimento e tratativa, o ofício entregue na agência de ${formatarTextoPadrao(agencia)}, conforme documento anexo.
+${linhaConta}${linhaNota}
+
+Permanecemos à disposição para quaisquer esclarecimentos adicionais.`;
+
+  return;
+}
 
 if (emailTipoSelecionado === "processarTrocaProcedente") {
 
@@ -2422,7 +3374,7 @@ Encaminhamos, para conhecimento e análise, o ofício entregue na agência de Sa
 
 Segue dados do solicitante:
 
-Nome: ${cliente}
+Nome: ${formatarTextoPadrao(cliente)}
 Telefone para retorno: ${telefone}
 E-mail para retorno: ${email}
 

@@ -357,49 +357,81 @@
         </section>
 
         <!-- SCRIPTS -->
-        <section id="scriptsPage" class="page">
+<section id="scriptsPage" class="page">
   <h1>Scripts / Mensagens Padrão</h1>
   <p class="page-subtitle">Pesquise, visualize e copie mensagens padronizadas.</p>
 
-  <div class="scripts-layout">
+  <div class="scripts-new-layout">
 
-    <!-- PAINEL ESQUERDO -->
-    <div class="scripts-panel">
+    <!-- BUSCA SUPERIOR -->
+    <div class="scripts-top-search-card">
 
-      <div class="scripts-search">
+      <div class="scripts-search scripts-main-search">
         <i class="fa-solid fa-magnifying-glass"></i>
+
         <input
           type="text"
           id="scriptSearchInput"
-          placeholder="Buscar por título ou conteúdo..."
+          placeholder="Buscar por título ou conteúdo."
           autocomplete="off"
         />
-      </div>
 
-      <div id="scriptsList" class="scripts-list"></div>
-
-    </div>
-
-    <!-- VISUALIZAÇÃO -->
-    <div class="script-viewer">
-
-      <div class="script-viewer-header">
-        <div>
-          <span class="viewer-label">Script selecionado</span>
-          <h2 id="selectedScriptTitle">Selecione um script</h2>
-        </div>
-
-        <button id="copyScriptButton" class="copy-script-button" disabled>
-          <i class="fa-regular fa-copy"></i>
-          Copiar
+        <button type="button" id="clearScriptSearchButton" class="script-search-clear">
+          Limpar
         </button>
       </div>
 
-      <div id="selectedScriptText" class="script-text">
-        Clique em um script ao lado para visualizar o conteúdo completo.
+      <div id="scriptsList" class="scripts-list scripts-list-hidden"></div>
+
+      <div id="scriptsInitialMessage" class="scripts-initial-message">
+        <i class="fa-solid fa-arrow-up"></i>
+        <strong>Digite na busca acima para localizar um script.</strong>
       </div>
 
-      <span id="copyScriptFeedback" class="copy-feedback"></span>
+    </div>
+
+    <!-- ÁREA INFERIOR -->
+    <div id="scriptsWorkArea" class="scripts-work-area hidden">
+
+      <!-- FORMULÁRIO DINÂMICO -->
+      <div id="scriptDynamicFormCard" class="script-dynamic-form-card hidden">
+        <div class="script-card-header">
+          <div>
+            <span class="script-step-number">1</span>
+            <strong>Preencha os campos</strong>
+          </div>
+
+          <span id="scriptDynamicBadge" class="script-dynamic-badge">Script dinâmico</span>
+        </div>
+
+        <div id="scriptDynamicFields"></div>
+
+        <button type="button" id="clearDynamicScriptButton" class="script-clean-button">
+          <i class="fa-solid fa-rotate-left"></i>
+          Limpar formulário
+        </button>
+      </div>
+
+      <!-- RESULTADO DO SCRIPT -->
+      <div id="scriptResultCard" class="script-result-card hidden">
+        <div class="script-card-header">
+          <div>
+            <span class="script-step-number green">2</span>
+            <strong id="selectedScriptTitle">Script</strong>
+          </div>
+
+          <button id="copyScriptButton" class="copy-script-button" disabled>
+            <i class="fa-regular fa-copy"></i>
+            Copiar
+          </button>
+        </div>
+
+        <div id="selectedScriptText" class="script-text">
+          Selecione um script para visualizar o conteúdo.
+        </div>
+
+        <span id="copyScriptFeedback" class="copy-feedback"></span>
+      </div>
 
     </div>
 
@@ -411,15 +443,25 @@
   <h1>Gerador de Email</h1>
   <p class="page-subtitle">Pesquise, selecione o tipo de apoio e gere e-mails padronizados.</p>
 
-  <div class="scripts-layout">
+  <div class="scripts-new-layout">
 
-    <div class="scripts-panel" style="width: 38%;">
-      <div class="scripts-search">
-        <i class="fa-solid fa-envelope-open-text"></i>
-        <input type="text" id="emailSearchInput" placeholder="Buscar tipo de e-mail..." autocomplete="off" />
-      </div>
+  <div class="scripts-top-search-card">
+    <div class="scripts-search scripts-main-search">
+      <i class="fa-solid fa-envelope-open-text"></i>
 
-      <div id="emailTypesList" class="scripts-list">
+      <input
+        type="text"
+        id="emailSearchInput"
+        placeholder="Buscar tipo de e-mail."
+        autocomplete="off"
+      />
+
+      <button type="button" id="clearEmailSearchButton" class="script-search-clear">
+        Limpar
+      </button>
+    </div>
+
+    <div id="emailTypesList" class="scripts-list scripts-list-hidden">
         <button class="script-item" type="button" data-type="poda">
           <strong>SOLICITAÇÃO PODA DE ÁRVORE</strong>
           <span>Apoio operacional</span>
@@ -445,15 +487,26 @@
           <span>Ofício externo</span>
         </button>
 
-        <button class="script-item" type="button"><strong>OFÍCIO DE CLIENTE</strong><span>Ofício externo</span></button>
+        <button class="script-item" type="button" data-type="oficioCliente">
+  <strong>OFÍCIO DE CLIENTE</strong>
+  <span>Ofício externo, Baixo Assinado ou Direcionado a gerência de Relacionamento com o Cliente</span>
+</button>
 
         <button class="script-item" type="button" data-type="oficioPoderPublico">
   <strong>OFÍCIO DE PODER PÚBLICO</strong>
   <span>Procon, Ministério Público, Polícia Civil, Polícia Militar, Bombeiro, Defensoria Pública, Juizado, Câmara de Vereadores e Prefeituras</span>
 </button>
 
-        <button class="script-item" type="button"><strong>RECEBIMENTO DOCUMENTO JUDICIAL</strong><span>Citação, Intimação e Liminar</span></button>
-        <button class="script-item" type="button"><strong>DOCUMENTO JUDICIAL DESCUMPRIMENTO</strong><span>Sentença ou Liminar</span></button>
+        <button class="script-item" type="button" data-type="recebimentoDocumentoJudicial">
+  <strong>RECEBIMENTO DOCUMENTO JUDICIAL</strong>
+  <span>Citação, Intimação, Liminar, Sentença ou Decisão</span>
+</button>
+
+        <button class="script-item" type="button" data-type="documentoJudicialDescumprimento">
+  <strong>DOCUMENTO JUDICIAL DESCUMPRIMENTO</strong>
+  <span>Citação, Intimação, Liminar, Sentença ou Decisão</span>
+</button>
+
         <button class="script-item" type="button" data-type="retiradaNegativacao">
         <strong>RETIRADA DE NEGATIVAÇÃO</strong>
         <span>Apoio comercial</span>
@@ -484,17 +537,28 @@
          <strong>CADASTRO DE LOGRADOURO SISTEMA SAP</strong>
          <span>Apoio cadastral</span>
        </button>
-        <button class="script-item" type="button"><strong>E-MAIL PARA SUPERVISÃO - OUTROS NÃO ENQUADRADOS ANTERIORMENTE</strong><span>Apoio gerencial</span></button>
+
+        <button class="script-item" type="button" data-type="emailSupervisaoOutros">
+  <strong>E-MAIL PARA SUPERVISÃO - OUTROS NÃO ENQUADRADOS ANTERIORMENTE</strong>
+  <span>Apoio gerencial</span>
+</button>
+            </div>
+
+      <div id="emailInitialMessage" class="scripts-initial-message">
+        <i class="fa-solid fa-arrow-up"></i>
+        <strong>Digite na busca acima para localizar um tipo de e-mail.</strong>
       </div>
     </div>
 
-    <div class="script-viewer">
-      <div class="script-viewer-header">
-        <div>
-          <span class="viewer-label">E-mail selecionado</span>
-          <h2 id="selectedEmailTitle">Selecione um tipo de e-mail</h2>
-        </div>
+    <div class="email-work-area">
+  <div class="email-form-card">
+
+    <div class="script-viewer-header">
+      <div>
+        <span class="viewer-label">E-mail selecionado</span>
+        <h2 id="selectedEmailTitle">Selecione um tipo de e-mail</h2>
       </div>
+    </div>
 
       <div id="emailDynamicFields" class="complaint-dynamic-fields">
         <div class="complaint-empty-state">
@@ -511,7 +575,10 @@
         </button>
       </div>
 
-      <div class="email-result-grid">
+      </div> <!-- FECHA email-form-card -->
+
+      <div class="email-result-card">
+        <div class="email-result-grid">
 
         <div class="email-block">
           <div class="email-block-header">
@@ -558,134 +625,138 @@
     Selecione o tipo de reclamação, preencha os campos necessários e gere o texto padronizado para copiar.
   </p>
 
-  <div class="complaint-layout">
+  <div class="scripts-new-layout">
 
-    <div class="complaint-form-card">
-      <div class="complaint-section-title">
-        <div class="complaint-title-icon">
-          <i class="fa-solid fa-clipboard-list"></i>
-        </div>
+    <!-- BUSCA SUPERIOR -->
+    <div class="scripts-top-search-card">
 
-        <div>
-          <h2>Dados da Reclamação</h2>
-          <span>Os campos serão exibidos conforme o tipo selecionado.</span>
-        </div>
-      </div>
+      <div class="scripts-search scripts-main-search">
+        <i class="fa-solid fa-circle-exclamation"></i>
 
-      <div class="scripts-search complaint-search-box">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input
-    type="text"
-    id="complaintTypeSearchInput"
-    placeholder="Buscar tipo de reclamação..."
-    autocomplete="off"
-  />
-</div>
+        <input
+          type="text"
+          id="complaintTypeSearchInput"
+          placeholder="Buscar tipo de reclamação."
+          autocomplete="off"
+        />
 
-<!-- SELECT escondido (continua sendo usado pelo JS) -->
-<select id="complaintType" class="hidden">
-  <option value="">Selecione o tipo de reclamação...</option>
-  <option value="cnr">Reclamação CNR</option>
-  <option value="periodica">Reclamação de Fatura Periódica</option>
-  <option value="mla">Fatura MLA - Duplicada após cadastro na TSEE</option>
-  <option value="pagaNaoBaixada">Fatura paga e não baixada</option>
-  <option value="leituraInicial">Erro de implementação de leitura inicial</option>
-  <option value="geradora">Fatura da geradora não compensou excedentes</option>
-  <option value="erroLeituraAtual">Erro leitura - leitura atual</option>
-  <option value="prazos">Prazos</option>
-</select>
-
-<!-- LISTA VISUAL (igual email/scripts) -->
-<div id="complaintTypesList" class="scripts-list complaint-types-list hidden">
-
-  <button class="script-item" type="button" data-value="cnr">
-    <strong>Reclamação CNR</strong>
-    <span>Consumo não registrado</span>
-  </button>
-
-  <button class="script-item" type="button" data-value="periodica">
-    <strong>Fatura Periódica</strong>
-    <span>Reclamação de fatura</span>
-  </button>
-
-  <button class="script-item" type="button" data-value="mla">
-    <strong>Fatura MLA</strong>
-    <span>Duplicidade após TSEE</span>
-  </button>
-
-  <button class="script-item" type="button" data-value="pagaNaoBaixada">
-    <strong>Fatura paga não baixada</strong>
-    <span>Pagamento não reconhecido</span>
-  </button>
-
-  <button class="script-item" type="button" data-value="leituraInicial">
-    <strong>Erro leitura inicial</strong>
-    <span>Implementação incorreta</span>
-  </button>
-
-  <button class="script-item" type="button" data-value="geradora">
-    <strong>Fatura geradora</strong>
-    <span>Compensação não aplicada</span>
-  </button>
-
-  <button class="script-item" type="button" data-value="erroLeituraAtual">
-    <strong>Erro leitura atual</strong>
-    <span>Diferença de leitura</span>
-  </button>
-
-  <button class="script-item" type="button" data-value="prazos">
-    <strong>Prazos</strong>
-    <span>Descumprimento</span>
-  </button>
-
-</div>
-
-      <div class="complaint-field complaint-full">
-        <label>Reclamação aberta por insistência?</label>
-
-        <div class="complaint-radio-group">
-          <label>
-            <input type="radio" name="complaintInsistencia" value="sim" />
-            Sim
-          </label>
-
-          <label>
-            <input type="radio" name="complaintInsistencia" value="nao" checked />
-            Não
-          </label>
-        </div>
-      </div>
-
-      <div id="complaintDynamicFields" class="complaint-dynamic-fields">
-        <div class="complaint-empty-state">
-          <i class="fa-regular fa-hand-pointer"></i>
-          <strong>Selecione um tipo de reclamação</strong>
-          <span>Após selecionar, os campos específicos aparecerão aqui.</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="complaint-result-card">
-      <div class="complaint-result-header">
-        <div>
-          <span class="viewer-label">Texto final</span>
-          <h2>Registro gerado</h2>
-        </div>
-
-        <button id="copyComplaintButton" class="copy-script-button" type="button" disabled>
-          <i class="fa-regular fa-copy"></i>
-          Copiar
+        <button type="button" id="clearComplaintSearchButton" class="script-search-clear">
+          Limpar
         </button>
       </div>
 
-      <textarea
-        id="complaintResultText"
-        class="complaint-result-text"
-        readonly
-        placeholder="O texto da reclamação será gerado automaticamente aqui..."
-      ></textarea>
+      <!-- SELECT escondido: continua sendo usado pelo JS -->
+      <select id="complaintType" class="hidden">
+        <option value="">Selecione o tipo de reclamação.</option>
+        <option value="cnr">Reclamação CNR</option>
+        <option value="periodica">Reclamação de Fatura Periódica</option>
+        <option value="mla">Fatura MLA - Duplicada após cadastro na TSEE</option>
+        <option value="pagaNaoBaixada">Fatura paga e não baixada</option>
+        <option value="leituraInicial">Erro de implementação de leitura inicial</option>
+        <option value="geradora">Fatura da geradora não compensou excedentes</option>
+        <option value="erroLeituraAtual">Erro leitura - leitura atual</option>
+        <option value="prazos">Prazos</option>
+      </select>
 
-      <span id="copyComplaintFeedback" class="copy-feedback"></span>
+      <!-- LISTA VISUAL -->
+      <div id="complaintTypesList" class="scripts-list scripts-list-hidden">
+
+        <button class="script-item" type="button" data-value="cnr">
+          <strong>Reclamação CNR</strong>
+          <span>Consumo não registrado</span>
+        </button>
+
+        <button class="script-item" type="button" data-value="periodica">
+          <strong>Fatura Periódica</strong>
+          <span>Reclamação de fatura</span>
+        </button>
+
+        <button class="script-item" type="button" data-value="mla">
+          <strong>Fatura MLA</strong>
+          <span>Duplicidade após TSEE</span>
+        </button>
+
+        <button class="script-item" type="button" data-value="pagaNaoBaixada">
+          <strong>Fatura paga não baixada</strong>
+          <span>Pagamento não reconhecido</span>
+        </button>
+
+        <button class="script-item" type="button" data-value="leituraInicial">
+          <strong>Erro leitura inicial</strong>
+          <span>Implementação incorreta</span>
+        </button>
+
+        <button class="script-item" type="button" data-value="geradora">
+          <strong>Fatura geradora</strong>
+          <span>Compensação não aplicada</span>
+        </button>
+
+        <button class="script-item" type="button" data-value="erroLeituraAtual">
+          <strong>Erro leitura atual</strong>
+          <span>Diferença de leitura</span>
+        </button>
+
+        <button class="script-item" type="button" data-value="prazos">
+          <strong>Prazos</strong>
+          <span>Descumprimento</span>
+        </button>
+
+      </div>
+
+      <div id="complaintInitialMessage" class="scripts-initial-message">
+        <i class="fa-solid fa-arrow-up"></i>
+        <strong>Digite ou clique na busca acima para selecionar o tipo de reclamação.</strong>
+      </div>
+
+    </div>
+
+    <!-- ÁREA INFERIOR -->
+    <div id="complaintWorkArea" class="email-work-area hidden">
+
+      <!-- QUADRO ESQUERDO -->
+      <div class="email-form-card">
+
+        <div class="complaint-field complaint-full">
+          <label>Reclamação aberta por insistência?</label>
+
+          <div class="complaint-radio-group">
+            <label>
+              <input type="radio" name="complaintInsistencia" value="sim" />
+              Sim
+            </label>
+
+            <label>
+              <input type="radio" name="complaintInsistencia" value="nao" checked />
+              Não
+            </label>
+          </div>
+        </div>
+
+        <div id="complaintDynamicFields" class="complaint-dynamic-fields">
+          <div class="complaint-empty-state">
+            <i class="fa-regular fa-hand-pointer"></i>
+            <strong>Selecione um tipo de reclamação</strong>
+            <span>Após selecionar, os campos específicos aparecerão aqui.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- QUADRO DIREITO -->
+      <div class="email-result-card">
+        <div class="email-block">
+          <div class="email-block-header">
+            <strong>Registro Gerado</strong>
+            <button id="copyComplaintButton" class="copy-script-button" type="button" disabled>
+              Copiar
+            </button>
+          </div>
+
+          <textarea id="complaintResultText" readonly></textarea>
+          <span id="copyComplaintFeedback" class="copy-feedback"></span>
+        </div>
+      </div>
+
     </div>
 
   </div>

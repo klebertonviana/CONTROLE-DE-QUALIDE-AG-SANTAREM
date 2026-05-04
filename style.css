@@ -1576,3 +1576,320 @@ button,
   background: rgba(134, 22, 48, 0.06);
   border-color: var(--primary);
 }
+
+/* ================= SCRIPT DINÂMICO - DESLOCAMENTO DE RAMAL ================= */
+
+.dynamic-script-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dynamic-script-alert {
+  background: #fff8f8;
+  border: 1px solid #efc9cf;
+  border-radius: 12px;
+  padding: 16px 18px;
+  color: #1f2933;
+  line-height: 1.6;
+}
+
+.dynamic-script-alert strong {
+  display: block;
+  color: var(--primary);
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.dynamic-script-alert p {
+  font-size: 14px;
+}
+
+.dynamic-script-result-title {
+  margin-top: 6px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dynamic-script-result {
+  width: 100%;
+  min-height: 220px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+  resize: vertical;
+  outline: none;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #111827;
+  background: #f9fafb;
+}
+
+/* ================= NOVO LAYOUT - SCRIPTS / MENSAGENS PADRÃO ================= */
+
+.scripts-new-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.scripts-top-search-card {
+  background: #ffffff;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.scripts-main-search {
+  width: 100%;
+}
+
+.script-search-clear {
+  background: transparent;
+  border: 0;
+  border-left: 1px solid #e5e7eb;
+  color: var(--primary);
+  padding-left: 16px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.script-search-clear:hover {
+  color: var(--primary-dark);
+}
+
+.scripts-list-hidden {
+  display: none;
+}
+
+.scripts-top-search-card .scripts-list {
+  margin-top: 14px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.scripts-initial-message {
+  margin-top: 18px;
+  color: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.scripts-initial-message i {
+  font-size: 18px;
+}
+
+.scripts-work-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.scripts-work-area.simple-mode {
+  grid-template-columns: minmax(360px, 760px);
+  justify-content: center;
+}
+
+.script-dynamic-form-card,
+.script-result-card {
+  background: #ffffff;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.script-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.script-card-header > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.script-card-header strong {
+  color: #111827;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.script-step-number {
+  width: 28px;
+  height: 28px;
+  background: var(--primary);
+  color: #ffffff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.script-step-number.green {
+  background: #22c55e;
+}
+
+.script-dynamic-badge {
+  background: #f7e8ed;
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+#scriptDynamicFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 22px;
+}
+
+#scriptDynamicFields .complaint-field.full {
+  grid-column: 1 / -1;
+}
+
+.script-clean-button {
+  margin-top: 18px;
+  min-height: 42px;
+  background: #ffffff;
+  border: 1px solid #d8dde6;
+  color: #1f2933;
+  border-radius: 9px;
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.script-clean-button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.script-result-card .script-text {
+  min-height: 240px;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 1100px) {
+  .scripts-work-area {
+    grid-template-columns: 1fr;
+  }
+
+  .scripts-work-area.simple-mode {
+    grid-template-columns: 1fr;
+  }
+
+  #scriptDynamicFields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= NOVO LAYOUT - GERADOR DE EMAIL ================= */
+
+.email-work-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.email-form-card,
+.email-result-card {
+  background: #ffffff;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.email-form-card #emailDynamicFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 22px;
+}
+
+.email-form-card #emailDynamicFields .complaint-field {
+  margin-bottom: 0;
+}
+
+.email-result-card .email-result-grid {
+  margin-top: 0;
+}
+
+@media (max-width: 1100px) {
+  .email-work-area {
+    grid-template-columns: 1fr;
+  }
+
+  .email-form-card #emailDynamicFields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= CAMPOS OBRIGATÓRIOS - SCRIPTS DINÂMICOS ================= */
+
+.campo-obrigatorio-erro {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.10) !important;
+}
+
+.script-required-message {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 10px;
+  color: #991b1b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* ================= RESULTADO RECLAMAÇÃO - TAMANHO PROFISSIONAL ================= */
+
+#complaintWorkArea {
+  align-items: stretch;
+}
+
+#complaintWorkArea .email-result-card {
+  height: 100%;
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+}
+
+#complaintWorkArea .email-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#complaintResultText {
+  flex: 1;
+  width: 100%;
+  min-height: 550px;
+  resize: vertical;
+
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 12px;
+}
